@@ -92,7 +92,8 @@ Echiquier::jouerPiece(Piece* p, int x, int y)
 }
 
 
-Piece* Echiquier::getRoi(bool blanc)
+Piece*
+Echiquier::getRoi(bool blanc)
 {
 	for (int i = 0; i < m_size; ++i)
 	{
@@ -119,14 +120,14 @@ int Echiquier::statusPlayer(bool player)
 {
 	Piece *roi = getRoi(player);
 
-	if(roi->getAvailableMovements(*this)->size() == 0)
-		return 2;
-
 	if(roi != 0)
 	{
+		if(roi->getAvailableMovements(*this)->size() == 0)
+			return 2;
+
 		for (int i = 0; i < m_size; ++i)
 		{
-			if(getPiece(i) != 0 && getPiece(i)->isWhite() == currentPlayer)
+			if(getPiece(i) != 0 && getPiece(i)->isWhite() != currentPlayer)
 				if(getPiece(i)->mouvementValide(*this, roi->x(), roi->y()))
 					return 1;
 		}
@@ -145,8 +146,47 @@ Echiquier::enleverPiece( int x, int y )
  	return p;
 }
 
+vector<sf::Vector2i>*
+Echiquier::availableMovements(Piece *p)
+{
+	if (statusPlayer(currentPlayer) != 0) {
+		if (dynamic_cast<Roi *>(p)) {
+			return p->getAvailableMovements(*this);
+		} else {
+			vector<Piece*> threats = getThreats();
+			vector<sf::Vector2i>* availableMovements = new vector<sf::Vector2i>();
+			cout << "Hart" << endl;
+			for (int i = 0; i < threats.size(); i++) {
+				cout << threats[i]->toString() << endl;
+				if (p->mouvementValide(*this, threats[i]->x(), threats[i]->y())) {
+					availableMovements->push_back(sf::Vector2i(threats[i]->x(), threats[i]->y()));
+				}
+			}
+			return availableMovements;
+		}
+	}
+	return p->getAvailableMovements(*this);
+}
+
+vector<Piece*>
+Echiquier::getThreats()
+{
+	Piece *roi = getRoi(currentPlayer);
+	std::vector<Piece*> threats;
+
+	for (int i = 0; i < m_size; ++i)
+	{
+		if(getPiece(i) != 0 && getPiece(i)->isWhite() != currentPlayer)
+			if(getPiece(i)->mouvementValide(*this, roi->x(), roi->y()))
+				threats.push_back(getPiece(i));
+	}
+
+	return threats;
+}
+
 /* Cmd game */
-void Echiquier::playGame(JoueurBlanc *jb, JoueurNoir *jn)
+void
+Echiquier::playGame(JoueurBlanc *jb, JoueurNoir *jn)
 {
  	int loosed = 0;
  	bool invalidMove = true;

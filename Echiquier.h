@@ -39,6 +39,8 @@ public:
   Piece* enleverPiece( int x, int y );
   Piece* getRoi(bool player);
   int statusPlayer(bool player);
+  std::vector<sf::Vector2i>* availableMovements(Piece *p);
+  std::vector<Piece*> getThreats();
 
 
   void affiche();

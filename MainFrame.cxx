@@ -160,7 +160,7 @@ void MainFrame::addText()
 	{
 		drawEchecStatus();
 		if (echiquier->statusPlayer(true) == 2 || echiquier->statusPlayer(false) == 2)
-		drawLooserColor();
+			drawLooserColor();
 	}
 }
 
@@ -203,19 +203,18 @@ void MainFrame::buttonPressed()
 	}
 	else
 	{
-		for (unsigned int i = 0; i < foreground.size(); ++i)
-			delete foreground[i];
-
-		foreground.clear();
+		deleteForeground();
 
 		if(selectedPiece != 0)
 		{
 			std::vector<sf::Vector2i> *availables = selectedPiece->getAvailableMovements(*echiquier);
 			for (int i = 0; i < availables->size(); ++i)
-			if((*availables)[i].x == mouseToCoordinate(position.y) && (*availables)[i].y == mouseToCoordinate(position.x))
 			{
-				echiquier->jouerPiece(selectedPiece, mouseToCoordinate(position.y), mouseToCoordinate(position.x));
-				addText();
+				if((*availables)[i].x == mouseToCoordinate(position.y) && (*availables)[i].y == mouseToCoordinate(position.x))
+				{
+					echiquier->jouerPiece(selectedPiece, mouseToCoordinate(position.y), mouseToCoordinate(position.x));
+					addText();
+				}
 			}
 
 			selectedPiece = 0;
@@ -264,7 +263,7 @@ bool MainFrame::isOnShape(sf::Shape *shape, sf::Vector2i *position)
 
 void MainFrame::drawPossibleMoves(Piece* p, sf::Vector2i position)
 {
-	std::vector<sf::Vector2i> *v = p->getAvailableMovements(*echiquier);
+	std::vector<sf::Vector2i> *v = echiquier->availableMovements(p);
 	int x = position.x;
 	int y = position.y;
 
