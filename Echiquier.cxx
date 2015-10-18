@@ -4,295 +4,280 @@
  * @file Echiquier.cxx
  */
 
+#include <iostream>
+#include <sstream>
 #include "Echiquier.h"
-#include "Joueur.h"
-#include "JoueurBlanc.h"
-#include "JoueurNoir.h"
+#include "Utils.h"
+#include "Pion.h"
+#include "Roi.h"
 
 
-using namespace std;
+ using namespace std;
+
+ Echiquier::Echiquier() : currentPlayer(true)
+ {
+ 	for (int i = 0; i < m_size; ++i) {
+ 		m_cases[i] = NULL;
+ 	}
+ }
+
+ Echiquier::~Echiquier()
+ {
+ 	for (int i = 0; i < m_size; ++i)
+ 		delete m_cases[i];
+ }
+
+ Piece*
+ Echiquier::getPiece( int x, int y )
+ {
+ 	if(m_cases[matrixToArrayPosition(x, y)] != NULL)
+ 		return m_cases[matrixToArrayPosition(x, y)];
+
+ 	return 0;
+ }
+
+ Piece*
+ Echiquier::getPiece( int place )
+ {
+ 	if(m_cases[place] != NULL)
+ 		return m_cases[place];
+
+ 	return 0;
+ }
+
+bool
+Echiquier::getCurrentPlayer() const
+{
+	return currentPlayer;
+}
+
+bool
+Echiquier::placer( Piece* p )
+{
+ 	if(p != NULL && (m_cases[matrixToArrayPosition(p->x(), p->y())] == NULL)
+ 		&& (p->x() > 0 && p->x() < 9 && p->y() > 0 && p->y() < 9)
+ 		 )
+ 	{
+ 		m_cases[matrixToArrayPosition(p->x(), p->y())] = p;
+ 		return true;
+ 	}
+
+ 	return false;
+}
+
+
+bool
+Echiquier::deplacer( Piece* p, int x, int y )
+{
+	cout << "deplacer" << endl;
+	m_cases[matrixToArrayPosition(p->x(), p->y())] = 0;
+	p->move(x, y);
+	return this->placer(p);
+}
+
+
+void
+Echiquier::jouerPiece(Piece* p, int x, int y)
+{
+	cout << "jouerPiece" << endl;
+	Piece *current = enleverPiece(p->x(), p->y());
+
+	if(getPiece(x, y) != 0 && getPiece(x, y)->isWhite() != p->isWhite())
+	{
+		enleverPiece(x, y);
+	 	deplacer(current, x, y);
+	}
+	else
+	{
+	 	deplacer(current, x, y);
+	}
+
+	this->currentPlayer = !currentPlayer;
+	cout << "end jouerPiece" << endl;
+}
+
+
+Piece* Echiquier::getRoi(bool blanc)
+{
+	cout << "getRoi " << blanc << endl;
+	for (int i = 0; i < m_size; ++i)
+	{
+		if(getPiece(i) != 0 )
+		{
+			if(dynamic_cast<Roi*>(getPiece(i)))
+			{
+				const Roi *r = dynamic_cast<Roi *>(getPiece(i));
+				if(r->isWhite() == blanc )
+					return m_cases[i];
+			}
+		}
+	}
+
+	return 0;
+}
 
 /**
- * Constructeur par défaut.
- * Initialise à vide l'echiquier.
- */
-Echiquier::Echiquier()
+* return 0 is not check nor checkmate
+* return 1 is check
+* return 2 is checkmate
+*/
+int Echiquier::statusPlayer(bool player)
 {
-    for(unsigned int i=0; i<64; i++)
-    {
-        m_cases[i]=NULL;
-    }
+	cout << "statusPlayer" << endl;
+	Piece *roi = getRoi(player);
 
-    Joueur *jB=new JoueurBlanc();
-    Joueur *jN=new JoueurNoir();
+	if(roi->getAvailableMovements(*this)->size() == 0)
+		return 2;
 
-    setJoueur(jB,jN);
-
-    font.loadFromFile("dreamwalker.ttf");
-
-    spriteJoueurEnCours=sf::Sprite(Piece::texturePiece);
-
-    texturePlateau.loadFromFile("board.png");
-
-    spritePlateau=sf::Sprite(texturePlateau);
-
-
-}
-Echiquier::Echiquier(Joueur *j1,Joueur *j2)
-{
-    for(unsigned int i=0; i<64; i++)
-    {
-        m_cases[i]=NULL;
-    }
-
-    setJoueur(j1,j2);
-
-    font.loadFromFile("dreamwalker.ttf");
-
-    spriteJoueurEnCours=sf::Sprite(Piece::texturePiece);
-
-}
-Echiquier::Echiquier(Partie p)
-{
-    for(unsigned int i=0; i<64; i++)
-    {
-        m_cases[i]=NULL;
-    }
-    tour=p.tour;
-
-    Joueur *j1=new JoueurBlanc(utility::split(p.j1,","));
-    Joueur *j2=new JoueurNoir(utility::split(p.j2,","));
-
-    setJoueur(j1,j2);
-
-    font.loadFromFile("dreamwalker.ttf");
-
-    spriteJoueurEnCours=sf::Sprite(Piece::texturePiece);
-
-    texturePlateau.loadFromFile("board.png");
-
-    spritePlateau=sf::Sprite(texturePlateau);
-}
-Echiquier::~Echiquier()
-{
-    delete joueurs[0];
-
-    delete joueurs[1];
+	if(roi != 0)
+	{
+		for (int i = 0; i < m_size; ++i)
+		{
+			if(getPiece(i) != 0 && getPiece(i)->isWhite() == currentPlayer)
+				if(getPiece(i)->mouvementValide(*this, roi->x(), roi->y()))
+					return 1;
+		}
+	}
+	cout << "end statusPlayer" << endl;
+	return 0;
 }
 
-/**
- * Recupere la piece situee sur une case.
- *
- * @param x un entier entre 1 et 8
- * @param y un entier entre 1 et 8
- *
- * @return 0 si aucune piece n'est sur cette case et un pointeur
- * vers une piece sinon.
- */
-Piece* Echiquier::getPiece( int x, int y )
+Piece*
+Echiquier::enleverPiece( int x, int y )
 {
-    if(utility::inPlateau(x,y))
-        return m_cases[y*8+x];
-    else
-        return NULL;
+ 	Piece *p = getPiece(x, y);
+
+ 	m_cases[matrixToArrayPosition(x, y)] = 0;
+
+ 	return p;
 }
 
-
-
-
-/**
- * Place une piece sur l'echiquier, aux coordonnees specifiees dans la piece.
- *
- * @param p un pointeur vers une piece
- *
- * @return 'true' si le placement s'est bien passe, 'false' sinon
- * (case occupee, coordonnees invalides, piece vide )
- */
-bool Echiquier::placer( Piece* p )
+/* Cmd game */
+void Echiquier::playGame(JoueurBlanc *jb, JoueurNoir *jn)
 {
-    if(p!=NULL)
-    {
-        if(utility::inPlateau(p->x(),p->y()))
-        {
-            int pos=p->y()*8+p->x();
+ 	int loosed = 0;
+ 	bool invalidMove = true;
+ 	int x=0, y=0;
+ 	Piece *currentPiece;
+ 	vector<sf::Vector2i> *av = new vector<sf::Vector2i>();
 
-            if(m_cases[pos]==NULL)
-            {
-                m_cases[pos]=p;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-    else
-    {
-        return false;
-    }
-}
+ 	int scoreW=0, scoreB=0;
 
+ 	while(!loosed)
+ 	{
+ 		cout << "Au joueur " << ((currentPlayer) ? "blanc" : "noir") << " de joueur" << endl;
+ 		cout << "Quel pion choisissez vous ?" << endl;
 
-/**
- * Deplace une piece sur l'echiquier, des coordonnees specifiees
- * dans la piece aux coordonnees x,y.
- *
- * @param p un pointeur vers une piece
- * @param x un entier entre 1 et 8
- * @param y un entier entre 1 et 8
- *
- * @return 'true' si le placement s'est bien passe, 'false' sinon
- * (case occupee, coordonnees invalides, piece vide, piece pas
- * presente au bon endroit sur l'echiquier)
- */
-bool Echiquier::deplacer( Piece* p, int x, int y )
-{
-    return false;
-}
+ 		do
+ 		{
+ 			cout << "Mauvaise selection, reessayez" << endl;
+ 			do {
+ 				cout << "Entrez x" << endl;
+ 				cin >> x;
+ 			} while (x <1 || x>8);
+ 			do {
+ 				cout << "Entrez y" << endl;
+ 				cin >> y;
+ 			} while(y < 1 || y > 8);
 
+ 			if(getPiece(x, y) != 0)
+ 				av = getPiece(x, y)->getAvailableMovements(*this);
 
-/**
- * Enleve la piece situee sur une case (qui devient vide).
- *
- * @param x un entier entre 1 et 8
- * @param y un entier entre 1 et 8
- *
- * @return 0 si aucune piece n'est sur cette case et le pointeur
- * vers la piece enlevee sinon.
- */
-void Echiquier::enleverPiece( int x, int y )
-{
-    if(utility::inPlateau(x,y))
-        m_cases[y*8+x]=NULL;
-}
+ 		} while((getPiece(x, y)->isWhite() != currentPlayer) || av->size() == 0 && getPiece(x, y) == 0);
 
+ 		currentPiece = enleverPiece(x, y);
 
-/**
- * Affiche l'echiquier avec des # pour les cases noires et . pour
- * les blanches si elles sont vides, et avec B pour les pieces
- * blanches et N pour les pieces noires.
- */
-void Echiquier::affiche()
-{
-    cout << endl << "  01234567" << endl;
-    for ( int y = 0; y < 8; ++y )
-    {
-        cout << y << " ";
-        for ( int x = 0; x <= 7; ++x )
-        {
-            string c;
-            Piece* p = getPiece( x, y );
-            if ( p == 0 )
-                c = ( ( x + y ) % 2 ) == 0 ? '#' : '.';
-            else
-                c = p->typePiece();
-            cout << c;
-        }
-        cout << " " << y << endl;
-    }
-    cout << "  01234567" << endl;
+ 		while(invalidMove)
+ 		{
+
+ 			for (int i = 0; i < av->size(); ++i)
+ 			{
+ 				sf::Vector2i coor = (*av)[i];
+ 				cout << "x : " << coor.x << " y : " << coor.y << endl;
+ 			}
+
+ 			cout << "Entrez la case de destination: " << endl;
+
+ 			do {
+ 				cout << "Entrez x" << endl;
+ 				cin >> x;
+ 			} while (x <1 || x>8);
+ 			do {
+ 				cout << "Entrez y" << endl;
+ 				cin >> y;
+ 			} while(y < 1 || y > 8);
+
+ 			for (int i = 0; i < av->size(); ++i)
+ 			{
+ 				sf::Vector2i coor = (*av)[i];
+ 				if(x == coor.x && y == coor.y)
+ 					invalidMove = false;
+ 			}
+ 		}
+
+ 		if(getPiece(x, y) != NULL)
+ 			enleverPiece(x, y);
+
+ 		deplacer(currentPiece, x, y);
+
+ 		currentPlayer = !currentPlayer;
+
+ 		affiche();
+
+ 		invalidMove = true;
+ 		currentPiece = 0;
+ 		x = 0;
+ 		y = 0;
+ 		av->clear();
+ 	}
 }
 
 void
-Echiquier::afficheGraphique(sf::RenderWindow &app)
+Echiquier::affiche()
 {
-    sf::Text text;
+ 	stringstream stream;
+ 	stream << "\n" << "  12345678" << "\n";
+ 	for ( int y = 1; y <= 8; ++y )
+ 	{
+ 		stream << y << " ";
+ 		for ( int x = 1; x <= 8; ++x )
+ 		{
+ 			char c;
+ 			Piece* p = getPiece( x, y );
+ 			if ( p == 0 )
+ 				c = ( ( x + y ) % 2 ) == 0 ? '#' : '.';
+ 			else
+ 				c = p->getChar();
+ 			stream << c;
+ 		}
+ 		stream << " " << y << "\n";
+ 	}
+ 	stream << "  12345678" << "\n";
 
-    text.setFont(font);
-    text.setString("Joueur en cours");
-    text.setCharacterSize(24);
-    text.setColor(sf::Color::Black);
-    text.setStyle(sf::Text::Underlined);
-    text.setPosition(500,130);
-
-    app.draw(text);
-
-    if(joueurs[tour]->isWhite())
-        spriteJoueurEnCours.setTextureRect(sf::IntRect(60, 60, 60, 60));
-    else
-        spriteJoueurEnCours.setTextureRect(sf::IntRect(0, 60, 60, 60));
-
-    spriteJoueurEnCours.setPosition(500,160);
-
-    app.draw(spritePlateau);
-    app.draw(spriteJoueurEnCours);
-
-    joueurs[0]->affichePieceJGraphique(app,this);
-    joueurs[1]->affichePieceJGraphique(app,this);
+ 	cout << stream.str() << endl;
 }
-bool Echiquier::click(int mx,int my)
+
+void
+Echiquier::affichage()
 {
-    int caseX=mx/60;
-    int caseY=my/60;
+ 	stringstream stream;
+ 	stream << "\n" << "  12345678" << "\n";
+ 	for ( int y = 1; y <= 8; ++y )
+ 	{
+ 		stream << y << " ";
+ 		for ( int x = 1; x <= 8; ++x )
+ 		{
+ 			char c;
+ 			Piece* p = getPiece( x, y );
+ 			if ( p == 0 )
+ 				c = '0';
+ 			else
+ 				c = '1';
+ 			stream << c;
+ 		}
+ 		stream << " " << y << "\n";
+ 	}
+ 	stream << "  12345678" << "\n";
 
-    bool echecEtMath=false;
-
-    if(joueurs[tour]->move(caseX,caseY,this))
-    {
-        joueurs[tour]->isEchec(this);
-        joueurs[(tour+1)%2]->isEchec(this);
-
-        tour=(tour+1)%2;
-
-        echecEtMath=joueurs[tour]->isChessMath(this);
-    }
-    return echecEtMath;
-}
-void Echiquier::setJoueur(Joueur *jB,Joueur *jN)
-{
-    joueurs[0]=jB;
-    joueurs[1]=jN;
-
-    jB->setJoueurAdverse(jN);
-    jN->setJoueurAdverse(jB);
-
-    jB->placer(this);
-    jN->placer(this);
-}
-void Echiquier::savePartie(std::string nameFile)
-{
-    ofstream myfile;
-
-    myfile.open ("savedGames.txt",std::ios_base::app);
-    myfile << nameFile << endl;
-    myfile << tour << endl;
-
-    joueurs[0]->saveJoueur(myfile);
-    joueurs[1]->saveJoueur(myfile);
-
-    myfile.close();
-};
-
-
-//void Echiquier::openPartie()
-//{
-//    ifstream infile("example.txt");
-//    string piecesJoueurBlanc;
-//    string piecesJoueurNoir;
-//    if(infile >> tour >> piecesJoueurBlanc >> piecesJoueurNoir)
-//    {
-//
-//    }
-//    else
-//    {
-//        cout << "Fichier non valide" << endl;
-//    }
-//    infile.close();
-//
-//    if(joueurs[0]!=NULL)
-//        delete joueurs[0];
-//
-//    if(joueurs[1]!=NULL)
-//        delete joueurs[1];
-//
-//    joueurs[0]=new JoueurBlanc(utility::split(piecesJoueurBlanc,","));
-//    joueurs[1]=new JoueurNoir(utility::split(piecesJoueurNoir,","));
-//
-//    setJoueur(joueurs[0],joueurs[1]);
-//
-//};
+ 	cout << stream.str() << endl;
+ }

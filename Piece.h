@@ -1,87 +1,48 @@
-#if !defined Piece_h
-#define Piece_h
-
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <string>
 /**
- * Declaration d'une classe modélisant une piece de jeu d'echec.
+ * Header de Piece.cxx
+ *
+ * @file Piece.h
  */
+
+#ifndef PIECE_H
+#define PIECE_H
+
+#include <sstream>
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <SFML/System.hpp>
+#include "Echiquier.h"
+
 class Echiquier;
-
-struct Case
-{
-    int x;
-    int y;
-
-    Case(int _x,int _y)
-    {
-        x=_x;
-        y=_y;
-    };
-    ~Case() {};
-};
 
 class Piece
 {
-    private:
+private:
+  int m_x;
+  int m_y;
+  bool m_white;
+  std::vector<sf::Vector2i> *availableMovements;
 
-        int m_x;
+public:
+  Piece();
+  Piece(int x, int y, bool white);
+  Piece(const Piece & p);
+  Piece & operator= (const Piece & p);
+  ~Piece();
 
-        int m_y;
+  void init( int x, int y, bool white );
+  virtual void move( int x, int y );
+  int x() const;
+  int y() const;
+  bool isWhite() const;
+  bool isAtTheSamePlace(Piece &p) const;
+  virtual bool mouvementValide(Echiquier & e, int x, int y) = 0;
+  virtual char getChar() const = 0;
+  virtual std::string toString() const;
 
-    protected:
+  std::vector<sf::Vector2i>* getAvailableMovements(Echiquier &e);
 
-    bool m_white;
-
-        sf::Sprite spritePiece;
-
-    public:
-
-        Piece();
-
-        Piece(int x,int y,bool white);
-
-        Piece(const Piece &p);
-
-        virtual Piece *Clone()=0;
-
-        virtual ~Piece();
-
-        void init( int x, int y, bool white );
-
-        void move( int x, int y );
-
-        int x();
-
-        int y();
-
-        bool isWhite();
-
-        bool isBlack();
-
-        void affiche();
-
-        static sf::Texture texturePiece;
-
-        static void initImage()
-        {
-            texturePiece.loadFromFile("chess.png");
-        };
-
-        virtual char typePiece()=0;
-
-        sf::Sprite getSprite()
-        {
-            return spritePiece;
-        };
-        void afficheGraphique(sf::RenderWindow &app)
-        {
-            spritePiece.setPosition(x()*60,y()*60);
-            app.draw(spritePiece);
-        }
-
-        virtual std::vector<Case> mouvementsPossible(Echiquier *e)=0;
 };
 
-#endif // !defined Piece_h
+#endif

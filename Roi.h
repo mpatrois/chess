@@ -2,21 +2,17 @@
 #define ROI_H
 
 #include "Piece.h"
+#include "Utils.h"
 
-
-class Roi : public Piece
+class Roi : public Piece 
 {
-    public:
+public:
+	Roi(bool white);
 
-        Roi(int x, int y, bool white);
-
-        virtual ~Roi();
-
-        virtual char typePiece();
-
-        Roi *Clone();
-
-        std::vector<Case> mouvementsPossible(Echiquier *e);
+  	virtual bool mouvementValide(Echiquier & e, int x, int y);
+  	bool isNotEchec(Echiquier & e, int x, int y);
+	virtual char getChar() const;
+  	virtual std::string toString() const;
 };
 
-#endif // ROI_H
+#endif

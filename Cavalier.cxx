@@ -1,63 +1,32 @@
-#include "Echiquier.h"
 #include "Cavalier.h"
-#include "util.h"
 
-Cavalier::Cavalier(int x, int y, bool white):Piece(x,y,white)
+Cavalier::Cavalier(int x, int y, bool white) : Piece(x, y, white)
+{}
+
+bool 
+Cavalier::mouvementValide(Echiquier & e, int x, int y)
 {
-    if(m_white)
-        spritePiece.setTextureRect(sf::IntRect(60, 60, 60, 60));
-    else
-        spritePiece.setTextureRect(sf::IntRect(0, 60, 60, 60));
-};
+	if(outOfBoard(x, y) || (this->x() == x && this->y() == y))
+		return false;
+	
+	if(e.getPiece(x, y) != 0 && e.getPiece(x, y)->isWhite() == isWhite())
+		return false;
 
-Cavalier::~Cavalier() {};
+	if (( std::abs(this->x() - x) == 2 && std::abs(this->y() - y) == 1 ) 
+		|| ( std::abs(this->x() - x) == 1 && std::abs(this->y() - y) == 2 ))
+		return true;
 
-Cavalier *Cavalier::Clone()
+	return false;
+}
+
+char
+Cavalier::getChar() const
 {
-    return new Cavalier(*this);
-};
+	return (isWhite() ? 'C' : 'c');
+}
 
-char Cavalier::typePiece()
+std::string
+Cavalier::toString() const
 {
-    if(m_white)
-        return 'C';
-    else
-        return 'c';
-};
-
-std::vector<Case> Cavalier::mouvementsPossible(Echiquier *e)
-{
-    std::vector<Case> allMoves;
-    std::vector<Case> listeCase;
-
-    allMoves.push_back(Case(x() + 1 ,y() + 2));
-    allMoves.push_back(Case(x() - 1 ,y() + 2));
-    allMoves.push_back(Case(x() + 2 ,y() - 1));
-    allMoves.push_back(Case(x() + 2 ,y() + 1));
-    allMoves.push_back(Case(x() + 1 ,y() - 2));
-    allMoves.push_back(Case(x() - 1 ,y() - 2));
-    allMoves.push_back(Case(x() - 2 ,y() + 1));
-    allMoves.push_back(Case(x() - 2 ,y() - 1));
-
-    for (unsigned int i=0; i<allMoves.size(); i++)
-    {
-        int dx=allMoves[i].x;
-        int dy=allMoves[i].y;
-
-        if(utility::inPlateau(dx,dy))
-        {
-            if(e->getPiece(dx,dy)==NULL)
-            {
-                listeCase.push_back(allMoves[i]);
-            }
-            else
-            {
-                if(e->getPiece(dx,dy)->isWhite()!=m_white)
-                {
-                    listeCase.push_back(allMoves[i]);
-                }
-            }
-        }
-    }
-    return listeCase;
+	return "Cavalier: " + Piece::toString();
 }

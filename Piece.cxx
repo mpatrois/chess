@@ -1,76 +1,95 @@
-/**
- * Mise en oeuvre de Piece.h
- *
- * @file Piece.cxx
- */
-
-// A besoin de la declaration de la classe
 #include "Piece.h"
-#include "Echiquier.h"
-#include <iostream>
-sf::Texture Piece::texturePiece=sf::Texture();
+
+using namespace std;
 
 Piece::Piece()
 {
-}
-Piece::Piece(int x,int y,bool white)
-{
-    m_x=x;
-    m_y=y;
-    m_white=white;
-    spritePiece= sf::Sprite(texturePiece);
+  availableMovements = new std::vector<sf::Vector2i>();
 }
 
-Piece::Piece(const Piece &p)
+Piece::Piece(int x, int y, bool white): m_x(x), m_y(y), m_white(white) 
 {
-    m_x = p.m_x;
-    m_y = p.m_y;
-    m_white = p.m_white;
-    spritePiece= sf::Sprite(texturePiece);
-}
-Piece::~Piece()
-{
-
+  availableMovements = new std::vector<sf::Vector2i>();
 }
 
-void Piece::move( int x, int y )
+Piece::Piece(const Piece & p)
 {
-    m_x = x;
-    m_y = y;
+  m_x = p.m_x;
+  m_y = p.m_y;
+  m_white = p.m_white;
+  cout << "Constructeur par copie piece" << endl;
 }
 
-int Piece::x()
+Piece & Piece::operator= (const Piece & p)
 {
-    return m_x;
+  m_x = p.m_x;
+  m_y = p.m_y;
+  m_white = p.m_white;
+  cout << "Constructeur par copie piece operator=" << endl;
+  return *this;
 }
 
-int Piece::y()
-{
-    return m_y;
+
+Piece::~Piece() {
+  delete availableMovements;
 }
 
-bool Piece::isWhite()
+void
+Piece::init( int x, int y, bool white )
 {
-    return m_white;
+  m_x = x;
+  m_y = y;
+  m_white = white;
 }
 
-bool Piece::isBlack()
+void
+Piece::move( int x, int y )
 {
-    return !m_white;
+  m_x = x;
+  m_y = y;
 }
 
-void Piece::affiche()
+int
+Piece::x() const
 {
-    std::cout << m_x << " " <<m_y << " ";
+  return m_x;
+}
 
-    if(isWhite())
-    {
-        std::cout << "B";
-    }
-    else
-    {
-        std::cout << "N";
-    }
+int
+Piece::y() const
+{
+  return m_y;
+}
 
-    std::cout << std::endl;
+bool
+Piece::isWhite() const
+{
+  return m_white;
+}
+
+bool
+Piece::isAtTheSamePlace(Piece &p) const
+{
+	return m_y == p.y() && m_x == p.x();
+}
+
+std::vector<sf::Vector2i> * 
+Piece::getAvailableMovements(Echiquier &e)
+{
+  availableMovements->clear();
+
+  for (int i = 1; i < 9; ++i)
+    for (int j = 1; j < 9; ++j)
+      if(mouvementValide(e, i, j))
+        availableMovements->push_back(sf::Vector2i(i, j));
+
+  return availableMovements;
+}
+
+string
+Piece::toString() const
+{
+	stringstream stream;
+  stream << "\nx : " << m_x << "\ny : " << m_y << "\nCouleur : " << (m_white ? "Blanc\n" : "Noir\n");
+	return stream.str();
 }

@@ -1,67 +1,60 @@
 #include "Pion.h"
-#include "Echiquier.h"
-#include "util.h"
 
-Pion::Pion(int x,int y,bool white):Piece(x,y,white)
+Pion::Pion(int x, int y, bool white) : Piece(x, y, white), premierMouvement(true)
+{}
+
+void 
+Pion::move( int x, int y )
 {
-    if(m_white)
-        spritePiece.setTextureRect(sf::IntRect(60, 0, 60, 60));
-    else
-        spritePiece.setTextureRect(sf::IntRect(0, 0, 60, 60));
-};
+	hasPassedTheFirstMove();
+	Piece::move(x, y);
+}
 
-Pion::~Pion() {};
 
-char Pion::typePiece()
+void
+Pion::hasPassedTheFirstMove()
 {
-    if(m_white)
-        return 'P';
-    else
-        return 'p';
-};
+	premierMouvement = false;
+}
 
-Pion *Pion::Clone()
+bool 
+Pion::mouvementValide(Echiquier & e, int x, int y)
 {
-    return new Pion(*this);
-};
+	if(outOfBoard(x, y) || (this->x() == x && this->y() == y))
+		return false;
 
-std::vector<Case> Pion::mouvementsPossible(Echiquier *e)
+	int absolute_x = ((this->x() > x) ? this->x() - x : x - this->x());
+	int absolute_y = ((this->y() > y) ? this->y() - y : y - this->y());
+	int offset_y = ((this->y() > y) ? -1 : 1);
+	int offset_x = ((this->x() > x) ? -1 : 1);
+
+	if(offset_y != (isWhite() ? 1 : -1))
+		return false;
+
+	if(e.getPiece(x, y) == 0)
+	{
+		if(absolute_x == 0)
+			if(absolute_y == 1 || (absolute_y == 2 && premierMouvement 
+									&& e.getPiece(this->x(), this->y() + offset_y) == 0))
+				return true;
+	}
+	else
+	{ 
+		if(offset_y == (isWhite() ? 1 : -1) && absolute_y == 1 && absolute_x == 1 && e.getPiece(x, y)->isWhite() != this->isWhite())
+			return true;
+	}
+
+	return false;
+}
+
+char
+Pion::getChar() const
 {
-    std::vector<Case> listeCase;
+	return (isWhite() ? 'P' : 'p');
+}
 
-    int sens=1;
-
-    if(!m_white)
-        sens=-1;
-
-    if(e->getPiece(x(),y()+1*sens)==NULL)
-    {
-        Case c(x(),y()+1*sens);
-
-        listeCase.push_back(c);
-
-        if(((y()==6 && sens==-1) || (y()==1 && sens==1)) && e->getPiece(x(),y()+2*sens)==NULL )
-        {
-            Case c(x(),y()+2*sens);
-            listeCase.push_back(c);
-        }
-    }
-
-    if(e->getPiece(x()+1,y()+1*sens)!=NULL)
-    {
-        if(e->getPiece(x()+1,y()+1*sens)->isWhite()!=m_white)
-        {
-            Case c(x()+1,y()+1*sens);
-            listeCase.push_back(c);
-        }
-    }
-    if(e->getPiece(x()-1,y()+1*sens)!=NULL)
-    {
-        if(e->getPiece(x()-1,y()+1*sens)->isWhite()!=m_white)
-        {
-            Case c(x()-1,y()+1*sens);
-            listeCase.push_back(c);
-        }
-    }
-    return listeCase;
-};
+std::string
+Pion::toString() const
+{
+	return "Pion: " + Piece::toString();
+}

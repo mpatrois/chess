@@ -1,25 +1,15 @@
-#ifndef JOUEURBLANC_H
-#define JOUEURBLANC_H
+#ifndef JOUEUR_BLANC_H
+#define JOUEUR_BLANC_H
 
 #include "Joueur.h"
-#include <sstream>
-#include "util.h"
 
-
-
-class JoueurBlanc : public Joueur
+class JoueurBlanc : public Joueur 
 {
-    public:
+public:
+	JoueurBlanc();
+	virtual ~JoueurBlanc();
 
-    JoueurBlanc();
-
-    JoueurBlanc(std::vector<std::string> listPieces);
-
-    virtual ~JoueurBlanc();
-
-    bool isWhite();
-
-    JoueurBlanc *Clone();
+	std::string toString() const; 
 };
 
-#endif // JOUEURBLANC_H
+#endif

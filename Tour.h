@@ -2,21 +2,18 @@
 #define TOUR_H
 
 #include "Piece.h"
+#include "Utils.h"
 
-
-class Tour : public Piece
+class Tour : virtual public Piece
 {
-    public:
+public:
+	Tour();
+	Tour(int x, int y, bool white);
+	virtual ~Tour(){};
 
-    Tour(int x, int y, bool white);
-
-    virtual ~Tour();
-
-    virtual char typePiece();
-
-    Tour *Clone();
-
-    std::vector<Case> mouvementsPossible(Echiquier *e);
+  virtual bool mouvementValide(Echiquier & e, int x, int y);
+	virtual char getChar() const;
+	virtual std::string toString() const;
 };
 
-#endif // TOUR_H
+#endif

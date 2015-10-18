@@ -2,22 +2,19 @@
 #define REINE_H
 
 #include "Piece.h"
+#include "Utils.h"
+#include "Fou.h"
+#include "Tour.h"
 
-
-class Reine : public Piece
+class Reine : public  Fou, public Tour
 {
-    public:
+public:
+	Reine(bool white);
+	virtual ~Reine(){};
 
-        Reine(int x, int y, bool white);
-
-        virtual ~Reine();
-
-        Reine *Clone();
-
-        virtual char typePiece();;
-
-        std::vector<Case> mouvementsPossible(Echiquier *e);
-
+	virtual bool mouvementValide(Echiquier & e, int x, int y);
+	virtual char getChar() const;
+	virtual std::string toString() const;
 };
 
-#endif // REINE_H
+#endif

@@ -1,87 +1,31 @@
 #ifndef JOUEUR_H
 #define JOUEUR_H
-#include "Piece.h"
-#include "Echiquier.h"
-#include <vector>
+
 #include <iostream>
-#include <fstream>
-#include <SFML/Graphics.hpp>
+#include <vector>
+
+#include "Cavalier.h"
+#include "Reine.h"
+#include "Tour.h"
+#include "Pion.h"
+#include "Roi.h"
+#include "Fou.h"
+#include "Echiquier.h"
+
 
 class Joueur
 {
-    public:
+protected:
+	std::vector<Piece*> m_pieces;
+	bool m_white;
+public:
+	Joueur();
+	virtual ~Joueur() = 0;
 
-        Joueur();
+	bool placeEveryPiecesOn(Echiquier *ec);
+	bool alreadyHasAPiece(Piece *p) const;
 
-        Joueur(const Joueur &j);
-
-        Joueur(std::vector<std::string> listPieces);
-
-        Joueur *adverse;
-
-        virtual ~Joueur();
-
-        std::vector<Piece *> getPieces()
-        {
-            return listePieceJoueur;
-        };
-
-        void perdPiece(Piece *p);
-
-        void affichePieceJTerminal();
-
-        void affichePieceJGraphique(sf::RenderWindow &app,Echiquier *e);
-
-        void placer(Echiquier *e);
-
-        virtual bool isWhite()=0;
-
-        Case getPosRoiJoueur()
-        {
-            return Case(roiJoueur->x(),roiJoueur->y());
-        };
-
-        virtual Joueur *Clone()=0;
-
-        bool isChessMath(Echiquier *e);
-
-        bool move(int caseX,int caseY,Echiquier *e);
-
-        bool isMovePossible(int caseX,int caseY,Echiquier *e);
-
-        bool isEchec(Echiquier *e);
-
-        bool willBeEchec(int caseX,int caseY);
-
-        void setJoueurAdverse(Joueur *jAdverse)
-        {
-            adverse=jAdverse;
-        };
-
-        void saveJoueur(std::ofstream &myfile)
-        {
-            for(unsigned int i=0; i<listePieceJoueur.size(); i++)
-            {
-                if(i!=0)
-                {
-                    myfile<<",";
-                }
-                myfile << listePieceJoueur[i]->typePiece() << "|" << listePieceJoueur[i]->x() << "|" << listePieceJoueur[i]->y();
-            }
-            myfile << std::endl;
-        };
-
-    protected:
-
-        std::vector<Piece *> listePieceJoueur;
-
-        Piece* roiJoueur;
-
-        Piece* pieceSelected;
-
-    private:
-
-        bool echec;
+	std::string toString() const;
 };
 
-#endif // JOUEUR_H
+#endif

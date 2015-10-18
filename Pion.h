@@ -3,19 +3,21 @@
 
 #include "Piece.h"
 
+class Echiquier;
+
 class Pion : public Piece
 {
-	public:
-
-    Pion(int x,int y,bool white);
-
-    virtual ~Pion();
-
-    virtual char typePiece();
-
-    Pion *Clone();
-
-    std::vector<Case> mouvementsPossible(Echiquier *e);
+private:
+	bool premierMouvement;
+public:
+	Pion(int x, int y, bool white);
+	
+	void move(int x, int y);
+	void hasPassedTheFirstMove();
+	virtual bool mouvementValide(Echiquier & e, int x, int y);
+	virtual char getChar() const;
+	virtual std::string toString() const;
+	
 };
 
-#endif // PION_H
+#endif

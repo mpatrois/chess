@@ -2,22 +2,17 @@
 #define FOU_H
 
 #include "Piece.h"
-#include <cmath>
-#include <iostream>
 
-class Fou : public Piece
+class Fou : virtual public Piece
 {
-	public:
+public:
+	Fou();
+	Fou(int x, int y, bool white);
+	virtual ~Fou(){};
 
-    Fou(int x, int y, bool white);
-
-    virtual ~Fou();
-
-    virtual char typePiece();;
-
-    Fou *Clone();
-
-    std::vector<Case> mouvementsPossible(Echiquier *e);
+	virtual bool mouvementValide(Echiquier & e, int x, int y);
+	virtual char getChar() const;
+  	virtual std::string toString() const;
 };
 
-#endif // FOU_H
+#endif

@@ -1,65 +1,26 @@
 #include "Reine.h"
-#include "Echiquier.h"
 
-Reine::Reine(int x, int y, bool white):Piece(x,y,white)
+
+Reine::Reine(bool white) : Piece(4, (white  ? 1 : 8), white), Fou(), Tour()
 {
-    if(m_white)
-        spritePiece.setTextureRect(sf::IntRect(60, 240, 60, 60));
-    else
-        spritePiece.setTextureRect(sf::IntRect(0, 240, 60, 60));
-};
+	std::cout << "Creation reine \n"; 
+}
 
-Reine::~Reine() {};
-
-char Reine::typePiece()
+bool 
+Reine::mouvementValide(Echiquier & e, int x, int y)
 {
-    if(m_white)
-        return 'Q';
-    else
-        return 'q';
-};
 
-Reine *Reine::Clone()
+	return Fou::mouvementValide(e,x,y) || Tour::mouvementValide(e,x,y);
+}
+
+char
+Reine::getChar() const
 {
-    return new Reine(*this) ;
-};
+	return (isWhite() ? 'Q' : 'q');
+}
 
-std::vector<Case> Reine::mouvementsPossible(Echiquier *e)
+std::string
+Reine::toString() const
 {
-    std::vector<Case> listeCase;
-
-    for (int vx=-1; vx<2; vx++)
-        for (int vy=-1; vy<2; vy++)
-        {
-            int dx=x()+vx;
-            int dy=y()+vy;
-
-            bool stop=false;
-
-            if(vx!=0 || vy!=0)
-            {
-                while(dx < 8 && dy < 8 && dx > -1 && dy > -1 && !stop )
-                {
-                    if(e->getPiece(dx,dy)==NULL)
-                    {
-                        Case c(dx,dy);
-
-                        listeCase.push_back(c);
-                    }
-                    else
-                    {
-                        if(e->getPiece(dx,dy)->isWhite()!=m_white)
-                        {
-                            Case c(dx,dy);
-
-                            listeCase.push_back(c);
-                        }
-                        stop=true;
-                    }
-                    dx+=vx;
-                    dy+=vy;
-                }
-            }
-        }
-    return listeCase;
+	return "Reine: " + Piece::toString();
 }

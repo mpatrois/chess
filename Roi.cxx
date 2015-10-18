@@ -1,60 +1,73 @@
 #include "Roi.h"
-#include "Echiquier.h"
+#include <assert.h>
 
-Roi::Roi(int x, int y, bool white):Piece(x,y,white)
+Roi::Roi(bool white) : Piece(5, (white ? 1 : 8), white)
 {
-    if(m_white)
-        spritePiece.setTextureRect(sf::IntRect(60, 300, 60, 60));
-    else
-        spritePiece.setTextureRect(sf::IntRect(0, 300, 60, 60));
+	std::cout << "Creation roi \n";
+}
 
-};
-
-Roi::~Roi() {};
-
-char Roi::typePiece()
+bool 
+Roi::mouvementValide(Echiquier & e, int x, int y)
 {
-    if(m_white)
-        return 'R';
-    else
-        return 'r';
-};
+	if(outOfBoard(x, y) 
+		|| (this->x() == x && this->y() == y)
+		|| (e.getPiece(x, y) != 0 && e.getPiece(x, y)->isWhite() == isWhite()))
+		return false;
 
-Roi *Roi::Clone()
+	int absolute_x = ((this->x() > x) ? this->x() - x : x - this->x());
+	int absolute_y = ((this->y() > y) ? this->y() - y : y - this->y());
+
+	if(absolute_x > 1 || absolute_y > 1 )
+		return false;
+
+	if(e.getPiece(x, y) != 0 && e.getPiece(x, y)->isWhite() != isWhite() && isNotEchec(e, x, y))
+		return true;
+
+	return isNotEchec(e, x, y);
+}
+
+bool Roi::isNotEchec(Echiquier &e, int x, int y)
 {
-    return new Roi(*this) ;
-};
+	int old_x = this->x();
+	int old_y = this->y();
 
-std::vector<Case> Roi::mouvementsPossible(Echiquier *e)
+	Piece * removedPiece = 0;
+
+	if(e.getPiece(x, y) != 0)
+		removedPiece = e.enleverPiece(x, y);
+
+	assert(e.deplacer(this, x, y) != false );
+
+	for(int numCase = 0; numCase < e.m_size; numCase++)
+	{
+		if(e.getPiece(numCase) != 0 && e.getPiece(numCase) != this && e.getPiece(numCase)->isWhite() != this->isWhite())
+		{
+			if(e.getPiece(numCase)->mouvementValide(e, x, y))
+			{
+				e.deplacer(this, old_x, old_y);
+				if(removedPiece != 0)
+					e.placer(removedPiece);
+				return false;
+			}
+		}
+	}
+
+	e.deplacer(this, old_x, old_y);
+
+	if(removedPiece != 0)
+		e.placer(removedPiece);
+
+	return true;
+}
+
+char
+Roi::getChar() const
 {
-    std::vector<Case> listeCase;
-    for (int vx=-1; vx<2; vx++)
-        for (int vy=-1; vy<2; vy++)
-        {
-            int dx=x()+vx;
-            int dy=y()+vy;
+	return (isWhite() ? 'R' : 'r');
+}
 
-            if(vx!=0 || vy!=0)
-            {
-                if(dx < 8 && dy < 8 && dx > -1 && dy > -1)
-                {
-                    if(e->getPiece(dx,dy)==NULL)
-                    {
-                        Case c(dx,dy);
-                        listeCase.push_back(c);
-                    }
-                    else
-                    {
-                        if(e->getPiece(dx,dy)->isWhite()!=m_white)
-                        {
-                            Case c(dx,dy);
-                            listeCase.push_back(c);
-                        }
-                    }
-                    dx+=vx;
-                    dy+=vy;
-                }
-            }
-        }
-    return listeCase;
+std::string
+Roi::toString() const
+{
+	return "Roi: " + Piece::toString();
 }

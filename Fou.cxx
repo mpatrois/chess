@@ -1,65 +1,43 @@
 #include "Fou.h"
-#include "Echiquier.h"
 
-Fou::Fou(int x, int y, bool white):Piece(x,y,white)
+Fou::Fou()
+{}
+
+Fou::Fou(int x, int y, bool white) : Piece(x, y, white)
+{}
+
+bool 
+Fou::mouvementValide(Echiquier & e, int x, int y)
 {
-    if(m_white)
-        spritePiece.setTextureRect(sf::IntRect(60, 120, 60, 60));
-    else
-        spritePiece.setTextureRect(sf::IntRect(0, 120, 60, 60));
-};
+	if(outOfBoard(x , y) || (this->x() == x || this->y() == y))
+		return false;
 
-Fou::~Fou() {};
+	if(e.getPiece(x, y) != 0 && e.getPiece(x, y)->isWhite() == isWhite())
+		return false;
 
-char Fou::typePiece()
+	int offset_x = ((this->x() > x) ? -1 : 1);
+	int offset_y = ((this->y() > y) ? -1 : 1);
+	int m_x = this->x();
+	int m_y = this->y();
+
+	do {
+		m_x += offset_x;
+		m_y += offset_y;
+		if ((m_x != x || m_y != y) && e.getPiece(m_x , m_y) != 0)
+			return false;
+	} while(m_x != x || m_y != y);
+
+	return true;
+}
+
+char
+Fou::getChar() const
 {
-    if(m_white)
-        return 'F';
-    else
-        return 'f';
-};
+	return (isWhite() ? 'F' : 'f');
+}
 
-Fou *Fou::Clone()
+std::string
+Fou::toString() const
 {
-    return new Fou(*this) ;
-};
-
-std::vector<Case> Fou::mouvementsPossible(Echiquier *e)
-{
-    std::vector<Case> listeCase;
-    for(int vx=-1; vx<2; vx++)
-    {
-        for(int vy=-1; vy<2; vy++)
-        {
-            if(vx!=0 && vy!=0)
-            {
-                int dx=x()+vx;
-                int dy=y()+vy;
-                bool stop=false;
-                if(dx>-1 && dy>-1)
-                {
-                    while(dx < 8 && dy < 8 && dx > -1 && dy > -1 && !stop )
-                    {
-                        if(e->getPiece(dx,dy)==NULL)
-                        {
-                            Case c(dx,dy);
-                            listeCase.push_back(c);
-                        }
-                        else
-                        {
-                            if(e->getPiece(dx,dy)->isWhite()!=m_white)
-                            {
-                                Case c(dx,dy);
-                                listeCase.push_back(c);
-                            }
-                            stop=true;
-                        }
-                        dx+=vx;
-                        dy+=vy;
-                    }
-                }
-            }
-        }
-    }
-    return listeCase;
+	return "Fou: " + Piece::toString();
 }
