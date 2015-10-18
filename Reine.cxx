@@ -2,14 +2,11 @@
 
 
 Reine::Reine(bool white) : Piece(4, (white  ? 1 : 8), white), Fou(), Tour()
-{
-	std::cout << "Creation reine \n"; 
-}
+{}
 
-bool 
+bool
 Reine::mouvementValide(Echiquier & e, int x, int y)
 {
-
 	return Fou::mouvementValide(e,x,y) || Tour::mouvementValide(e,x,y);
 }
 

@@ -1,4 +1,4 @@
-/** 
+/**
  * Programme test de Piece
  *
  * @file testPiece.cxx
@@ -51,7 +51,7 @@ int main()
   delete ec;
 
 
-  // les objets definis dans cette fonction sont automatiquement détruits.
+  // les objets definis dans cette fonction sont automatiquement dï¿½truits.
   // Ex : p1
   return 0;
 }

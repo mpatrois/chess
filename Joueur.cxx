@@ -8,7 +8,6 @@ Joueur::Joueur(): m_pieces(18)
 
 Joueur::~Joueur()
 {
-	cout << "Destructeur joueur" << endl;
 	for (int i = 0; i < m_pieces.size(); ++i)
 		if(m_pieces[i] != NULL)
 			delete m_pieces[i];
@@ -17,7 +16,6 @@ Joueur::~Joueur()
 bool
 Joueur::placeEveryPiecesOn(Echiquier *ec)
 {
-	cout << "placeEveryPiecesOn" << endl;
 	for (int i = 0; i < m_pieces.size(); ++i)
 		if(ec->placer(m_pieces[i]) != true)
 			return false;

@@ -20,12 +20,12 @@ protected:
 	bool m_white;
 public:
 	Joueur();
-	virtual ~Joueur() = 0;
+	virtual ~Joueur();
 
 	bool placeEveryPiecesOn(Echiquier *ec);
 	bool alreadyHasAPiece(Piece *p) const;
 
-	std::string toString() const;
+	virtual std::string toString() const = 0;
 };
 
 #endif

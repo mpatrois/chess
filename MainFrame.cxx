@@ -50,7 +50,7 @@ MainFrame::MainFrame(Echiquier *e): echiquier(e)
 MainFrame::~MainFrame()
 {
 	for (int i = 0; i < background.size(); ++i)
-	delete background[i];
+		delete background[i];
 
 	background.clear();
 
@@ -60,8 +60,6 @@ MainFrame::~MainFrame()
 	texts.clear();
 
 	delete window;
-	delete selectedPiece;
-	delete echiquier;
 }
 
 void MainFrame::drawPieces()
@@ -115,7 +113,6 @@ void MainFrame::drawPieces()
 
 void MainFrame::drawEchecStatus()
 {
-	std::cout << "drawEchecStatus" << std::endl;
 	std::string content = "Echec du joueur ";
 	sf::Text t(content, font, 30);
 	if(echiquier->statusPlayer(false))
@@ -136,7 +133,6 @@ void MainFrame::drawEchecStatus()
 
 void MainFrame::drawLooserColor()
 {
-	std::cout << "drawLooserColor" << std::endl;
 	std::string content = "Echec et mat ";
 	if(echiquier->statusPlayer(true) == 2 && echiquier->statusPlayer(false) == 2)
 	content = "Egalite !";
@@ -152,10 +148,8 @@ void MainFrame::drawLooserColor()
 
 void MainFrame::drawText()
 {
-	//std::cout << "drawText" << std::endl;
-
 	for (int i = 0; i < texts.size(); ++i)
-	window->draw(texts[i]);
+		window->draw(texts[i]);
 }
 
 void MainFrame::addText()
@@ -185,13 +179,12 @@ Piece* MainFrame::pieceOnMouse(int coordinate, sf::Vector2i position)
 	{
 		sf::Shape* s = background[i];
 		if(isOnShape(s, &position))
-		  echiquier->getPiece(coordinate);
+		  return echiquier->getPiece(coordinate);
 	}
 }
 
 void MainFrame::buttonPressed()
 {
-	std::cout << "buttonPressed" << std::endl;
 	sf::Vector2i position = sf::Mouse::getPosition(*window);
 	Piece *p = 0;
 	int coordinate = mouseCoordinatesToPosition(position.x, position.y, window->getSize().x);
@@ -222,7 +215,6 @@ void MainFrame::buttonPressed()
 			if((*availables)[i].x == mouseToCoordinate(position.y) && (*availables)[i].y == mouseToCoordinate(position.x))
 			{
 				echiquier->jouerPiece(selectedPiece, mouseToCoordinate(position.y), mouseToCoordinate(position.x));
-				std::cout << "moved away" << std::endl;
 				addText();
 			}
 
@@ -231,7 +223,6 @@ void MainFrame::buttonPressed()
 			availables->clear();
 		}
 	}
-	std::cout << "end buttonPressed" << std::endl;
 }
 
 void MainFrame::mousePosition()

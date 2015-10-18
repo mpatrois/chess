@@ -23,11 +23,7 @@ JoueurNoir::JoueurNoir() : Joueur()
 }
 
 JoueurNoir::~JoueurNoir()
-{
-	for(int i = 0; i < 16; i++)
-		delete m_pieces[i];
-	std::cout << "Destructeur JoueurNoir" << std::endl;
-}
+{}
 
 string
 JoueurNoir::toString() const

@@ -3,13 +3,13 @@
 
 #include "Joueur.h"
 
-class JoueurBlanc : public Joueur 
+class JoueurBlanc : public Joueur
 {
 public:
 	JoueurBlanc();
 	virtual ~JoueurBlanc();
 
-	std::string toString() const; 
+	std::string toString() const;
 };
 
 #endif

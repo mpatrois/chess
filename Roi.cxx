@@ -2,14 +2,12 @@
 #include <assert.h>
 
 Roi::Roi(bool white) : Piece(5, (white ? 1 : 8), white)
-{
-	std::cout << "Creation roi \n";
-}
+{}
 
-bool 
+bool
 Roi::mouvementValide(Echiquier & e, int x, int y)
 {
-	if(outOfBoard(x, y) 
+	if(outOfBoard(x, y)
 		|| (this->x() == x && this->y() == y)
 		|| (e.getPiece(x, y) != 0 && e.getPiece(x, y)->isWhite() == isWhite()))
 		return false;

@@ -12,38 +12,37 @@
 #include "Roi.h"
 
 
- using namespace std;
+using namespace std;
 
- Echiquier::Echiquier() : currentPlayer(true)
- {
- 	for (int i = 0; i < m_size; ++i) {
- 		m_cases[i] = NULL;
- 	}
- }
+Echiquier::Echiquier() : currentPlayer(true)
+{
+	for (int i = 0; i < m_size; ++i) {
+	   m_cases[i] = NULL;
+  }
+}
 
- Echiquier::~Echiquier()
- {
- 	for (int i = 0; i < m_size; ++i)
- 		delete m_cases[i];
- }
+Echiquier::~Echiquier()
+{
+  cout << "Delete echiquier" << endl;
+}
 
- Piece*
- Echiquier::getPiece( int x, int y )
- {
+Piece*
+Echiquier::getPiece( int x, int y )
+{
  	if(m_cases[matrixToArrayPosition(x, y)] != NULL)
  		return m_cases[matrixToArrayPosition(x, y)];
 
  	return 0;
- }
+}
 
- Piece*
- Echiquier::getPiece( int place )
- {
- 	if(m_cases[place] != NULL)
+Piece*
+Echiquier::getPiece( int place )
+{
+  if(m_cases[place] != NULL)
  		return m_cases[place];
 
  	return 0;
- }
+}
 
 bool
 Echiquier::getCurrentPlayer() const
@@ -55,8 +54,7 @@ bool
 Echiquier::placer( Piece* p )
 {
  	if(p != NULL && (m_cases[matrixToArrayPosition(p->x(), p->y())] == NULL)
- 		&& (p->x() > 0 && p->x() < 9 && p->y() > 0 && p->y() < 9)
- 		 )
+ 		&& (p->x() > 0 && p->x() < 9 && p->y() > 0 && p->y() < 9))
  	{
  		m_cases[matrixToArrayPosition(p->x(), p->y())] = p;
  		return true;
@@ -69,7 +67,6 @@ Echiquier::placer( Piece* p )
 bool
 Echiquier::deplacer( Piece* p, int x, int y )
 {
-	cout << "deplacer" << endl;
 	m_cases[matrixToArrayPosition(p->x(), p->y())] = 0;
 	p->move(x, y);
 	return this->placer(p);
@@ -79,7 +76,6 @@ Echiquier::deplacer( Piece* p, int x, int y )
 void
 Echiquier::jouerPiece(Piece* p, int x, int y)
 {
-	cout << "jouerPiece" << endl;
 	Piece *current = enleverPiece(p->x(), p->y());
 
 	if(getPiece(x, y) != 0 && getPiece(x, y)->isWhite() != p->isWhite())
@@ -93,13 +89,11 @@ Echiquier::jouerPiece(Piece* p, int x, int y)
 	}
 
 	this->currentPlayer = !currentPlayer;
-	cout << "end jouerPiece" << endl;
 }
 
 
 Piece* Echiquier::getRoi(bool blanc)
 {
-	cout << "getRoi " << blanc << endl;
 	for (int i = 0; i < m_size; ++i)
 	{
 		if(getPiece(i) != 0 )
@@ -123,7 +117,6 @@ Piece* Echiquier::getRoi(bool blanc)
 */
 int Echiquier::statusPlayer(bool player)
 {
-	cout << "statusPlayer" << endl;
 	Piece *roi = getRoi(player);
 
 	if(roi->getAvailableMovements(*this)->size() == 0)
@@ -138,7 +131,7 @@ int Echiquier::statusPlayer(bool player)
 					return 1;
 		}
 	}
-	cout << "end statusPlayer" << endl;
+
 	return 0;
 }
 

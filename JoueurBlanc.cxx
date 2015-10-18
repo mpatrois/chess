@@ -22,11 +22,7 @@ JoueurBlanc::JoueurBlanc() : Joueur()
 }
 
 JoueurBlanc::~JoueurBlanc()
-{
-	for(int i = 0; i < 16; i++)
-		delete m_pieces[i];
-	cout << "Destructeur white player" << endl;
-}
+{}
 
 string
 JoueurBlanc::toString() const

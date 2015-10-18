@@ -29,7 +29,7 @@ public:
   Piece(int x, int y, bool white);
   Piece(const Piece & p);
   Piece & operator= (const Piece & p);
-  ~Piece();
+  virtual ~Piece();
 
   void init( int x, int y, bool white );
   virtual void move( int x, int y );
