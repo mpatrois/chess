@@ -155,9 +155,7 @@ Echiquier::availableMovements(Piece *p)
 		} else {
 			vector<Piece*> threats = getThreats();
 			vector<sf::Vector2i>* availableMovements = new vector<sf::Vector2i>();
-			cout << "Hart" << endl;
 			for (int i = 0; i < threats.size(); i++) {
-				cout << threats[i]->toString() << endl;
 				if (p->mouvementValide(*this, threats[i]->x(), threats[i]->y())) {
 					availableMovements->push_back(sf::Vector2i(threats[i]->x(), threats[i]->y()));
 				}
