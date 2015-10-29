@@ -4,13 +4,13 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
-#include "Echiquier.h"
-#include "Pion.h"
-#include "Roi.h"
-#include "Fou.h"
-#include "Cavalier.h"
-#include "Tour.h"
-#include "Reine.h"
+#include "Chessboard.h"
+#include "Pawn.h"
+#include "King.h"
+#include "Bishop.h"
+#include "Knight.h"
+#include "Rook.h"
+#include "Queen.h"
 
 
 class MainFrame
@@ -18,35 +18,38 @@ class MainFrame
 private:
 	sf::RenderWindow *window;
 	sf::Texture chestPieces;
+	sf::Texture back;
+	sf::Texture save;
 	sf::Font font;
 
 	std::vector<sf::Shape*> background;
 	std::vector<sf::Shape*> foreground;
 	std::vector<sf::Sprite> pieces;
+	std::vector<sf::Sprite> buttons;
 	std::vector<sf::Text> texts;
 
-	Echiquier * echiquier;
+	Chessboard * chessboard;
 	Piece * selectedPiece;
 
-	sf::IntRect pionNoirRectangle;
-	sf::IntRect cavalierNoirRectangle;
-	sf::IntRect reineNoirRectangle;
-	sf::IntRect roiNoirRectangle;
-	sf::IntRect fouNoirRectangle;
-	sf::IntRect tourNoirRectangle;
-	sf::IntRect pionBlancRectangle;
-	sf::IntRect cavalierBlancRectangle ;
-	sf::IntRect reineBlancRectangle;
-	sf::IntRect roiBlancRectangle;
-	sf::IntRect fouBlancRectangle;
-	sf::IntRect tourBlancRectangle;
+	sf::IntRect blackPawnRectangle;
+	sf::IntRect blackKnightRectangle;
+	sf::IntRect blackQueenRectangle;
+	sf::IntRect blackKingRectangle;
+	sf::IntRect blackBishopRectangle;
+	sf::IntRect blackRookRectangle;
+	sf::IntRect whitePawnRectangle;
+	sf::IntRect whiteKnightRectangle ;
+	sf::IntRect whiteQueenRectangle;
+	sf::IntRect whiteKingRectangle;
+	sf::IntRect whiteBishopRectangle;
+	sf::IntRect whiteRookRectangle;
 
 protected:
 	bool isOnShape(sf::Shape *shape, sf::Vector2i *position);
 
 public:
 	MainFrame();
-	MainFrame(Echiquier *e);
+	MainFrame(Chessboard *e);
 	~MainFrame();
 
 	void drawPieces();

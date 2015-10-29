@@ -74,7 +74,7 @@ Piece::isAtTheSamePlace(Piece &p) const
 }
 
 std::vector<sf::Vector2i> * 
-Piece::getAvailableMovements(Echiquier &e)
+Piece::getAvailableMovements(Chessboard &e)
 {
   availableMovements->clear();
 

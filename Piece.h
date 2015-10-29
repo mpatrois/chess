@@ -12,9 +12,9 @@
 #include <cmath>
 #include <vector>
 #include <SFML/System.hpp>
-#include "Echiquier.h"
+#include "Chessboard.h"
 
-class Echiquier;
+class Chessboard;
 
 class Piece
 {
@@ -37,11 +37,11 @@ public:
   int y() const;
   bool isWhite() const;
   bool isAtTheSamePlace(Piece &p) const;
-  virtual bool mouvementValide(Echiquier & e, int x, int y) = 0;
+  virtual bool mouvementValide(Chessboard & e, int x, int y) = 0;
   virtual char getChar() const = 0;
   virtual std::string toString() const;
 
-  std::vector<sf::Vector2i>* getAvailableMovements(Echiquier &e);
+  std::vector<sf::Vector2i>* getAvailableMovements(Chessboard &e);
 
 };
 

@@ -1,15 +1,15 @@
 SRC_CXX=\
-	Utils.cxx MainFrame.cxx Piece.cxx Echiquier.cxx Joueur.cxx JoueurBlanc.cxx JoueurNoir.cxx Roi.cxx Reine.cxx Tour.cxx Cavalier.cxx Fou.cxx Pion.cxx
+	Utils.cxx MainFrame.cxx Piece.cxx Chessboard.cxx Player.cxx WhitePlayer.cxx BlackPlayer.cxx King.cxx Queen.cxx Rook.cxx Knight.cxx Bishop.cxx Pawn.cxx
 
 OBJ=${SRC_CXX:.cxx=.o}
 
-all: testPiece
+all: main
 
-testPiece: $(OBJ) testPiece.o
-	g++ $(OBJ) testPiece.o -o testPiece -lsfml-graphics -lsfml-window -lsfml-system
+main: $(OBJ) main.o
+	g++ $(OBJ) main.o -o prog -lsfml-graphics -lsfml-window -lsfml-system
 
 %.o: %.cxx
 	g++ -c $<
 
 clean:
-	@rm -f $(OBJ) testPiece.o testPiece *~
+	@rm -f $(OBJ) *.o prog *~
