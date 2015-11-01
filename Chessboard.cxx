@@ -13,8 +13,8 @@
 using namespace std;
 
 /**
- * Constructeur par d�faut.
- * Initialise � vide l'chessboard.
+ * Constructeur par défaut.
+ * Initialise à vide l'chessboard.
  */
 Chessboard::Chessboard() : tour(0)
 {
@@ -30,7 +30,7 @@ Chessboard::Chessboard() : tour(0)
 
     font.loadFromFile("ressources/dreamwalker.ttf");
 
-    spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
+    spriteCurrentPlayer=sf::Sprite(Piece::texturePiece);
 
     texturePlateau.loadFromFile("ressources/board.png");
 
@@ -38,6 +38,7 @@ Chessboard::Chessboard() : tour(0)
 
 
 }
+
 Chessboard::Chessboard(Player *j1,Player *j2) : tour(0)
 {
     for(unsigned int i=0; i<64; i++)
@@ -49,98 +50,67 @@ Chessboard::Chessboard(Player *j1,Player *j2) : tour(0)
 
     font.loadFromFile("ressources/dreamwalker.ttf");
 
-    spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
+    spriteCurrentPlayer=sf::Sprite(Piece::texturePiece);
 
 }
-Chessboard::Chessboard(Partie p)
+
+Chessboard::Chessboard(PartieD p) : tour(0)
 {
     for(unsigned int i=0; i<64; i++)
     {
         m_cases[i]=NULL;
     }
-    tour=p.tour;
 
-    Player *j1=new WhitePlayer(Utility::split(p.j1,","));
-    Player *j2=new BlackPlayer(Utility::split(p.j2,","));
-
-    setPlayer(j1,j2);
-
-    font.loadFromFile("ressources/dreamwalker.ttf");
-
-    spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
-
-    texturePlateau.loadFromFile("ressources/board.png");
-
-    spritePlateau=sf::Sprite(texturePlateau);
-}
-
-Chessboard::Chessboard(PartieD p)
-{
-    for(unsigned int i=0; i<64; i++)
-    {
-        m_cases[i]=NULL;
-    }
-    tour=0;
-    Player *jB=new WhitePlayer();
-    Player *jN=new BlackPlayer();
+    Player *jB = new WhitePlayer();
+    Player *jN = new BlackPlayer();
     setPlayer(jB,jN);
 
-    std::vector<std::string> listeCoupsString=Utility::split(p.coups,"|");
+    std::vector<std::string> listeBlowsString = Utility::split(p.blows,"|");
 
-    std::vector<Coup> listeCoupsCharge;
+    std::vector<Blow> listeBlowsCharge;
 
-
-    for (unsigned int i=0;i<listeCoupsString.size();i++ )
+    for (unsigned int i=0;i<listeBlowsString.size();i++ )
     {
-        int cseDepX=listeCoupsString[i][0]-'0';
-        int cseDepY=listeCoupsString[i][1]-'0';
-        int cseArvX=listeCoupsString[i][2]-'0';
-        int cseArvY=listeCoupsString[i][3]-'0';
+        int cseDepX=listeBlowsString[i][0]-'0';
+        int cseDepY=listeBlowsString[i][1]-'0';
+        int cseArvX=listeBlowsString[i][2]-'0';
+        int cseArvY=listeBlowsString[i][3]-'0';
 
-//         cout << cseDepX <<cseDepY << std::endl;
+        Square caseDepart(cseDepX,cseDepY);
+        Square caseArrivee(cseArvX,cseArvY);
 
-        Case caseDepart(cseDepX,cseDepY);
-        Case caseArrivee(cseArvX,cseArvY);
-
-        listeCoupsCharge.push_back(Coup(caseDepart,caseArrivee));
+        listeBlowsCharge.push_back(Blow(caseDepart,caseArrivee));
     }
-//    std::cout << listeCoups.size() << std::endl;
 
-    for (unsigned int i=0;i<listeCoupsCharge.size();i++ )
+    for (unsigned int i=0;i<listeBlowsCharge.size();i++ )
     {
-//        std::cout << listeCoupsCharge.size() << i << std::endl;
-
-//        cout << listeCoups[i].caseDepart.x << listeCoups[i].caseDepart.y << "|";
-        joueurs[tour]->selectPiece(listeCoupsCharge[i].caseDepart.x,listeCoupsCharge[i].caseDepart.y,this);
-        joueurs[tour]->move(listeCoupsCharge[i].caseArrivee.x,listeCoupsCharge[i].caseArrivee.y,this);
+        players[tour]->selectPiece(listeBlowsCharge[i].caseDepart.x,listeBlowsCharge[i].caseDepart.y,this);
+        players[tour]->move(listeBlowsCharge[i].caseArrivee.x,listeBlowsCharge[i].caseArrivee.y,this);
 
         tour=(tour+1)%2;
     }
 
-
-
     font.loadFromFile("dreamwalker.ttf");
 
-    spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
+    spriteCurrentPlayer = sf::Sprite(Piece::texturePiece);
 
     texturePlateau.loadFromFile("board.png");
 
-    spritePlateau=sf::Sprite(texturePlateau);
+    spritePlateau = sf::Sprite(texturePlateau);
 }
 Chessboard::~Chessboard()
 {
-    delete joueurs[0];
-
-    delete joueurs[1];
+    delete players[0];
+    delete players[1];
 }
 
 /**
- * Recupere la piece situee sur une case.
+ * Recupere la piece situee sur une square.
  *
  * @param x un entier entre 1 et 8
  * @param y un entier entre 1 et 8
  *
- * @return 0 si aucune piece n'est sur cette case et un pointeur
+ * @return 0 si aucune piece n'est sur cette square et un pointeur
  * vers une piece sinon.
  */
 Piece* Chessboard::getPiece( int x, int y )
@@ -160,9 +130,9 @@ Piece* Chessboard::getPiece( int x, int y )
  * @param p un pointeur vers une piece
  *
  * @return 'true' si le placement s'est bien passe, 'false' sinon
- * (case occupee, coordonnees invalides, piece vide )
+ * (square occupee, coordonnees invalides, piece vide )
  */
-bool Chessboard::placer( Piece* p )
+bool Chessboard::put( Piece* p )
 {
     if(p!=NULL)
     {
@@ -175,20 +145,11 @@ bool Chessboard::placer( Piece* p )
                 m_cases[pos]=p;
                 return true;
             }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
             return false;
         }
     }
-    else
-    {
-        return false;
-    }
+
+    return false;
 }
 
 
@@ -201,7 +162,7 @@ bool Chessboard::placer( Piece* p )
  * @param y un entier entre 1 et 8
  *
  * @return 'true' si le placement s'est bien passe, 'false' sinon
- * (case occupee, coordonnees invalides, piece vide, piece pas
+ * (square occupee, coordonnees invalides, piece vide, piece pas
  * presente au bon endkingt sur l'chessboard)
  */
 bool Chessboard::deplacer( Piece* p, int x, int y )
@@ -211,12 +172,12 @@ bool Chessboard::deplacer( Piece* p, int x, int y )
 
 
 /**
- * Enleve la piece situee sur une case (qui devient vide).
+ * Enleve la piece situee sur une square (qui devient vide).
  *
  * @param x un entier entre 1 et 8
  * @param y un entier entre 1 et 8
  *
- * @return 0 si aucune piece n'est sur cette case et le pointeur
+ * @return 0 si aucune piece n'est sur cette square et le pointeur
  * vers la piece enlevee sinon.
  */
 void Chessboard::enleverPiece( int x, int y )
@@ -231,7 +192,7 @@ void Chessboard::enleverPiece( int x, int y )
  * les blanches si elles sont vides, et avec B pour les pieces
  * blanches et N pour les pieces noires.
  */
-void Chessboard::affiche()
+void Chessboard::display()
 {
     cout << endl << "  01234567" << endl;
     for ( int y = 0; y < 8; ++y )
@@ -253,12 +214,12 @@ void Chessboard::affiche()
 }
 
 void
-Chessboard::afficheGraphique(sf::RenderWindow &app)
+Chessboard::graphicDisplay(sf::RenderWindow &app)
 {
     sf::Text text;
 
     text.setFont(font);
-    text.setString("Player en cours");
+    text.setString("Current player");
     text.setCharacterSize(24);
     text.setColor(sf::Color::Black);
     text.setStyle(sf::Text::Underlined);
@@ -266,48 +227,48 @@ Chessboard::afficheGraphique(sf::RenderWindow &app)
 
     app.draw(text);
 
-    if(joueurs[tour]->isWhite())
-        spritePlayerEnCours.setTextureRect(sf::IntRect(60, 60, 60, 60));
+    if(players[tour]->isWhite())
+        spriteCurrentPlayer.setTextureRect(sf::IntRect(60, 60, 60, 60));
     else
-        spritePlayerEnCours.setTextureRect(sf::IntRect(0, 60, 60, 60));
+        spriteCurrentPlayer.setTextureRect(sf::IntRect(0, 60, 60, 60));
 
-    spritePlayerEnCours.setPosition(500,160);
+    spriteCurrentPlayer.setPosition(500,160);
 
     app.draw(spritePlateau);
-    app.draw(spritePlayerEnCours);
+    app.draw(spriteCurrentPlayer);
 
-    joueurs[0]->affichePieceJGraphique(app,this);
-    joueurs[1]->affichePieceJGraphique(app,this);
+    players[0]->displayPlayerPiece(app,this);
+    players[1]->displayPlayerPiece(app,this);
 }
+
 bool Chessboard::click(int mx,int my)
 {
-//    cout << tour << "inCli" <<endl;
     int caseX=mx/60;
     int caseY=my/60;
 
-    bool echecEtMath=false;
+    bool checkMate=false;
 
-    if(joueurs[tour]->move(caseX,caseY,this))
+    if(players[tour]->move(caseX,caseY,this))
     {
-        joueurs[tour]->isEchec(this);
-        joueurs[(tour+1)%2]->isEchec(this);
+        players[tour]->isEchec(this);
+        players[(tour+1)%2]->isEchec(this);
 
         tour=(tour+1)%2;
 
-        echecEtMath=joueurs[tour]->isChessMath(this);
+        checkMate=players[tour]->isChessMath(this);
     }
-    return echecEtMath;
+    return checkMate;
 }
 void Chessboard::setPlayer(Player *jB,Player *jN)
 {
-    joueurs[0]=jB;
-    joueurs[1]=jN;
+    players[0]=jB;
+    players[1]=jN;
 
     jB->setPlayerAdverse(jN);
     jN->setPlayerAdverse(jB);
 
-    jB->placer(this);
-    jN->placer(this);
+    jB->put(this);
+    jN->put(this);
 }
 //void Chessboard::savePartie(std::string nameFile)
 //{
@@ -317,8 +278,8 @@ void Chessboard::setPlayer(Player *jB,Player *jN)
 //    myfile << nameFile << endl;
 //    myfile << tour << endl;
 //
-//    joueurs[0]->savePlayer(myfile);
-//    joueurs[1]->savePlayer(myfile);
+//    players[0]->savePlayer(myfile);
+//    players[1]->savePlayer(myfile);
 //
 //    myfile.close();
 //};
@@ -330,12 +291,12 @@ void Chessboard::savePartie(std::string nameFile)
     myfile.open ("Games.txt",std::ios_base::app);
     myfile << nameFile << endl;
 
-    for(unsigned int i=0;i<listeCoups.size();i++)
+    for(unsigned int i=0;i<listeBlows.size();i++)
     {
-        myfile << listeCoups[i].caseDepart.x ;
-        myfile << listeCoups[i].caseDepart.y ;
-        myfile << listeCoups[i].caseArrivee.x ;
-        myfile << listeCoups[i].caseArrivee.y <<"|";
+        myfile << listeBlows[i].caseDepart.x ;
+        myfile << listeBlows[i].caseDepart.y ;
+        myfile << listeBlows[i].caseArrivee.x ;
+        myfile << listeBlows[i].caseArrivee.y <<"|";
     }
     myfile<< endl;
 
@@ -344,13 +305,13 @@ void Chessboard::savePartie(std::string nameFile)
 
 Player *Chessboard::getAdverse(bool colPlayer){
      if(colPlayer){
-        return joueurs[1];
+        return players[1];
     }else
-        return joueurs[0];
+        return players[0];
 }
 
-void Chessboard::addCoup(Case cd,Case ca){
-    listeCoups.push_back(Coup(cd,ca));
+void Chessboard::addBlow(Square cd,Square ca){
+    listeBlows.push_back(Blow(cd,ca));
 }
 
 //void Chessboard::openPartie()
@@ -368,15 +329,15 @@ void Chessboard::addCoup(Case cd,Case ca){
 //    }
 //    infile.close();
 //
-//    if(joueurs[0]!=NULL)
-//        delete joueurs[0];
+//    if(players[0]!=NULL)
+//        delete players[0];
 //
-//    if(joueurs[1]!=NULL)
-//        delete joueurs[1];
+//    if(players[1]!=NULL)
+//        delete players[1];
 //
-//    joueurs[0]=new WhitePlayer(Utility::split(piecesWhitePlayer,","));
-//    joueurs[1]=new BlackPlayer(Utility::split(piecesBlackPlayer,","));
+//    players[0]=new WhitePlayer(Utility::split(piecesWhitePlayer,","));
+//    players[1]=new BlackPlayer(Utility::split(piecesBlackPlayer,","));
 //
-//    setPlayer(joueurs[0],joueurs[1]);
+//    setPlayer(players[0],players[1]);
 //
 //};

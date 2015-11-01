@@ -26,9 +26,9 @@ Rook *Rook::clone()
     return new Rook(*this);
 };
 
-std::vector<Case> Rook::mouvementsPossible(Chessboard *e)
+std::vector<Square> Rook::availableMovements(Chessboard *e)
 {
-    std::vector<Case> listeCase;
+    std::vector<Square> listeCase;
     for (int vx=-1; vx<2; vx++)
         for (int vy=-1; vy<2; vy++)
         {
@@ -41,14 +41,14 @@ std::vector<Case> Rook::mouvementsPossible(Chessboard *e)
                 {
                     if(e->getPiece(dx,dy)==NULL)
                     {
-                        Case c(dx,dy);
+                        Square c(dx,dy);
                         listeCase.push_back(c);
                     }
                     else
                     {
                         if(e->getPiece(dx,dy)->isWhite()!=m_white)
                         {
-                            Case c(dx,dy);
+                            Square c(dx,dy);
                             listeCase.push_back(c);
                         }
                         stop=true;

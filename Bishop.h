@@ -3,21 +3,20 @@
 
 #include "Piece.h"
 #include <cmath>
-#include <iostream>
 
 class Bishop : public Piece
 {
 	public:
 
-    Bishop(int x, int y, bool white);
+	    Bishop(int x, int y, bool white);
 
-    virtual ~Bishop();
+	    virtual ~Bishop();
 
-    virtual char typePiece();;
+	    Bishop *clone();
 
-    Bishop *clone();
+	    std::vector<Square> availableMovements(Chessboard *e);
 
-    std::vector<Case> mouvementsPossible(Chessboard *e);
+	    virtual char typePiece();
 };
 
 #endif // FOU_H

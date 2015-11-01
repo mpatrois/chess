@@ -19,7 +19,7 @@ class Rook : public Piece
 
     Rook *clone();
 
-    std::vector<Case> mouvementsPossible(Chessboard *e);
+    std::vector<Square> availableMovements(Chessboard *e);
 
     bool hadMove();
 

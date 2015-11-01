@@ -16,7 +16,6 @@ class BlackPlayer : public Player
         BlackPlayer *clone();
 
         bool isWhite() const;
-
 };
 
 #endif // JOUEURNOIR_H

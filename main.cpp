@@ -81,6 +81,7 @@ public:
         this->draw(enterName);
         this->draw(nameEntered);
         this->display();
+
         while (this->isOpen() && !quit)
             while (this->pollEvent(event))
             {
@@ -351,29 +352,32 @@ int main()
         switch (Menu(app,sprite,font))
         {
             case 0:
-            {
                 e=new Chessboard();
-            }
             break;
 
             case 1:
             {
-                PartieD partieCharge=ChargerPartie(app,sprite,font);
+                PartieD partieCharge = ChargerPartie(app,sprite,font);
                 if(partieCharge.name=="Annuler")
                     backMenu=true;
                 else
                     e=new Chessboard(partieCharge);
-            };break;
+                break;
+            }
 
             case 2:
-            {
                 quitGame=true;
-            };break;
+            break;
+
+            default:
+            break;
+
         }
+
         if(!quitGame && !backMenu)
         {
             app.clear(sf::Color(238,238,238));
-            e->afficheGraphique(app);
+            e->graphicDisplay(app);
 
             for(unsigned int i=0; i<listButton.size(); i++)
             {
@@ -405,7 +409,7 @@ int main()
                         }
 
                         app.clear(sf::Color(238,238,238));
-                        e->afficheGraphique(app);
+                        e->graphicDisplay(app);
 
                         for(unsigned int i=0; i<listButton.size(); i++)
                         {

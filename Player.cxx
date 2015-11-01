@@ -7,49 +7,55 @@
 
 Player::Player()
 {
-    echec=false;
-    pieceSelected=NULL;
+    check=false;
+    selectedPiece=NULL;
 }
+
 Player::Player(const Player &j)
 {
-    echec=false;
+    check=false;
 
-    for(unsigned int i=0; i<j.listePiecePlayer.size(); i++)
+    for(unsigned int i=0; i<j.playerPieces.size(); i++)
     {
 
-        Piece *p=j.listePiecePlayer[i]->clone();
+        Piece *p=j.playerPieces[i]->clone();
 
-        listePiecePlayer.push_back(p);
+        playerPieces.push_back(p);
 
-        if(j.kingPlayer==j.listePiecePlayer[i])
+        if(j.kingPlayer==j.playerPieces[i])
         {
             kingPlayer=dynamic_cast<King *>(p);
         }
-        if(j.pieceSelected!=NULL)
+        if(j.selectedPiece!=NULL)
         {
-            if(j.pieceSelected==j.listePiecePlayer[i])
-                pieceSelected=p;
+            if(j.selectedPiece==j.playerPieces[i])
+                selectedPiece=p;
         }
     }
 }
 
 Player::~Player()
 {
-    for (unsigned int x=0; x<listePiecePlayer.size(); x++)
-    {
-        delete listePiecePlayer[x];
-    }
+    for (unsigned int x=0; x<playerPieces.size(); x++)
+        delete playerPieces[x];
 }
+
+std::vector<Piece *> Player::getPieces()
+{
+    return playerPieces;
+}
+
 void Player::affichePieceJTerminal()
 {
-    for (unsigned int x=0; x<listePiecePlayer.size(); x++)
+    for (unsigned int x=0; x<playerPieces.size(); x++)
     {
-        listePiecePlayer[x]->affiche();
+        playerPieces[x]->display();
     }
 }
-void Player::affichePieceJGraphique(sf::RenderWindow &app,Chessboard *e)
+
+void Player::displayPlayerPiece(sf::RenderWindow &app,Chessboard *e)
 {
-    if(echec)
+    if(check)
     {
         sf::CircleShape circle(30);
 
@@ -59,18 +65,18 @@ void Player::affichePieceJGraphique(sf::RenderWindow &app,Chessboard *e)
         app.draw(circle);
     }
 
-    if(pieceSelected!=NULL)
+    if(selectedPiece!=NULL)
     {
         sf::RectangleShape rectangle;
 
         rectangle.setSize(sf::Vector2f(60, 60));
         rectangle.setFillColor(sf::Color(81,124,102));
-        rectangle.setPosition(pieceSelected->x()*60,pieceSelected->y()*60);
+        rectangle.setPosition(selectedPiece->x()*60,selectedPiece->y()*60);
 
         app.draw(rectangle);
 
-//       std::vector<Case> listCase=pieceSelected->mouvementsPossible(e);
-        std::vector<Case> listCase=listeMouvementPossible(e);
+//       std::vector<Square> listCase=selectedPiece->availableMovements(e);
+        std::vector<Square> listCase=listeMouvementPossible(e);
 
         for (unsigned int j=0; j<listCase.size(); j++)
         {
@@ -86,44 +92,46 @@ void Player::affichePieceJGraphique(sf::RenderWindow &app,Chessboard *e)
         }
     }
 
-    for (unsigned int x=0; x<listePiecePlayer.size(); x++)
+    for (unsigned int x=0; x<playerPieces.size(); x++)
     {
-        listePiecePlayer[x]->afficheGraphique(app);
+        playerPieces[x]->graphicDisplay(app);
     }
 }
-void Player::perdPiece(Piece *piecePerdue)
+
+void Player::loosePiece(Piece *piecePerdue)
 {
     int pos=-1;
 
-    for(unsigned int i=0; i < listePiecePlayer.size(); i++)
+    for(unsigned int i=0; i < playerPieces.size(); i++)
     {
-        if(listePiecePlayer[i]==piecePerdue)
+        if(playerPieces[i]==piecePerdue)
         {
             pos=i;
         }
     }
     if(pos!=-1)
     {
-        delete listePiecePlayer[pos];
-        listePiecePlayer.erase(std::remove(listePiecePlayer.begin(), listePiecePlayer.end(), listePiecePlayer[pos]), listePiecePlayer.end());
+        delete playerPieces[pos];
+        playerPieces.erase(std::remove(playerPieces.begin(), playerPieces.end(), playerPieces[pos]), playerPieces.end());
     }
 }
 
-void Player::placer(Chessboard *e)
+void Player::put(Chessboard *e)
 {
-    for (unsigned int x=0; x<listePiecePlayer.size(); x++)
+    for (unsigned int x=0; x<playerPieces.size(); x++)
     {
-        e->placer(listePiecePlayer[x]);
+        e->put(playerPieces[x]);
     }
 }
+
 bool Player::willBeEchec(int caseX,int caseY)
 {
     Player *myPlayer=this->clone();
-    Player *myPlayerAdverse=adverse->clone();
+    Player *myPlayerAdverse=opponent->clone();
 
     Chessboard *myChessboard=new Chessboard(myPlayer,myPlayerAdverse);
 
-    myPlayer->pieceSelected->move(caseX,caseY,myChessboard);
+    myPlayer->selectedPiece->move(caseX,caseY,myChessboard);
 
     bool echecFuture=myPlayer->isEchec(myChessboard);
 
@@ -131,59 +139,80 @@ bool Player::willBeEchec(int caseX,int caseY)
 
     return echecFuture;
 
+}
+
+Square Player::getPosKingPlayer()
+{
+    return Square(kingPlayer->x(),kingPlayer->y());
+}
+
+void Player::savePlayer(std::ofstream &myfile)
+{
+    for(unsigned int i=0; i<playerPieces.size(); i++)
+    {
+        if(i!=0)
+        {
+            myfile<<",";
+        }
+        myfile << playerPieces[i]->typePiece() << "|" << playerPieces[i]->x() << "|" << playerPieces[i]->y();
+    }
+    myfile << std::endl;
 };
+
 bool Player::isChessMath(Chessboard *e)
 {
-    if(echec)
+    if(check)
     {
-        pieceSelected=NULL;
-        for (unsigned int i=0; i<listePiecePlayer.size() ; i++)
+        selectedPiece=NULL;
+
+        for (unsigned int i=0; i<playerPieces.size() ; i++)
         {
-            pieceSelected=listePiecePlayer[i];
+            selectedPiece = playerPieces[i];
 
-            std::vector<Case> listeMouvPossible=pieceSelected->mouvementsPossible(e);
+            std::vector<Square> listAvailableMovements = selectedPiece->availableMovements(e);
 
-            for (unsigned int j=0; j<listeMouvPossible.size() ; j++)
+            for (unsigned int j=0; j<listAvailableMovements.size() ; j++)
             {
-                if(!willBeEchec(listeMouvPossible[j].x,listeMouvPossible[j].y))
+                if(!willBeEchec(listAvailableMovements[j].x,listAvailableMovements[j].y))
                 {
                     return false;
                 }
             }
         }
-        pieceSelected=NULL;
+
+        selectedPiece=NULL;
 
         return true;
     }
-    else
-    {
-        return false;
-    }
+
+    return false;
 }
 bool Player::isEchec(Chessboard *e)
 {
-    std::vector<Piece *> piecePlayerAdverse=adverse->getPieces();
+    std::vector<Piece *> opponentPieces = opponent->getPieces();
 
-    echec=false;
+    check=false;
 
-    for(unsigned int i=0; i<piecePlayerAdverse.size(); i++)
+    for(unsigned int i=0; i<opponentPieces.size(); i++)
     {
-        std::vector<Case> caseViseeParPlayerAdverse=piecePlayerAdverse[i]->mouvementsPossible(e);
+        std::vector<Square> opponentTargetSquares = opponentPieces[i]->availableMovements(e);
 
-        for(unsigned int j=0; j<caseViseeParPlayerAdverse.size(); j++)
+        for(unsigned int j=0; j<opponentTargetSquares.size(); j++)
         {
-            if(kingPlayer->x()==caseViseeParPlayerAdverse[j].x &&
-                kingPlayer->y()==caseViseeParPlayerAdverse[j].y )
-                echec=true;
+            if(kingPlayer->x()==opponentTargetSquares[j].x &&
+                kingPlayer->y()==opponentTargetSquares[j].y )
+                check = true;
         }
     }
-    return echec;
+
+    return check;
 }
+
 bool Player::isMovePossible(int caseX,int caseY,Chessboard *e)
 {
-    if(pieceSelected!=NULL)
+    if(selectedPiece!=NULL)
     {
-        std::vector<Case> listeCase=listeMouvementPossible(e);
+        std::vector<Square> listeCase=listeMouvementPossible(e);
 
         for (unsigned int i=0; i<listeCase.size(); i++)
         {
@@ -193,42 +222,43 @@ bool Player::isMovePossible(int caseX,int caseY,Chessboard *e)
     }
     return false;
 }
+
 bool Player::move(int caseX,int caseY,Chessboard *e)
 {
     bool mangeOuBouge=isMovePossible(caseX,caseY,e);
 
     if(mangeOuBouge)
     {
-        int lastX=pieceSelected->x();
-        int lastY=pieceSelected->y();
+        int lastX=selectedPiece->x();
+        int lastY=selectedPiece->y();
 
         if(isCastleRight(e,caseX,caseY))
         {
-            Rook *tDkingte=dynamic_cast<Rook *>(e->getPiece(7,pieceSelected->y()));
-            tDkingte->move(5,pieceSelected->y(),e);
+            Rook *tDkingte=dynamic_cast<Rook *>(e->getPiece(7,selectedPiece->y()));
+            tDkingte->move(5,selectedPiece->y(),e);
         }
 
         if(isCastleLeft(e,caseX,caseY))
         {
-            Rook *tGauche=dynamic_cast<Rook *>(e->getPiece(0,pieceSelected->y()));
-            tGauche->move(3,pieceSelected->y(),e);
+            Rook *tGauche=dynamic_cast<Rook *>(e->getPiece(0,selectedPiece->y()));
+            tGauche->move(3,selectedPiece->y(),e);
         }
 
         if(isEnPassantDkingte(e,caseX,caseY)){
-            adverse->perdPiece(e->getPiece(caseX,caseY+(getSens()*-1)));
+            opponent->loosePiece(e->getPiece(caseX,caseY+(getSens()*-1)));
             e->enleverPiece(caseX,caseY+(getSens()*-1));
         }
 
         if(isEnPassantLeft(e,caseX,caseY)){
-            adverse->perdPiece(e->getPiece(caseX,caseY+(getSens()*-1)));
+            opponent->loosePiece(e->getPiece(caseX,caseY+(getSens()*-1)));
             e->enleverPiece(caseX,caseY+(getSens()*-1));
         }
 
-        pieceSelected->move(caseX,caseY,e);
+        selectedPiece->move(caseX,caseY,e);
 
-        pieceSelected=NULL;
+        selectedPiece=NULL;
 
-        e->addCoup(Case(lastX,lastY),Case(caseX,caseY));
+        e->addBlow(Square(lastX,lastY),Square(caseX,caseY));
     }
     else
     {
@@ -237,7 +267,7 @@ bool Player::move(int caseX,int caseY,Chessboard *e)
         if(pTmp!=NULL)
         {
             if(isWhite()==pTmp->isWhite() )
-                pieceSelected=pTmp;
+                selectedPiece=pTmp;
         }
     }
     return mangeOuBouge;
@@ -253,64 +283,54 @@ int Player::getSens(){
     return sens;
 }
 
-std::vector<Case> Player::listeMouvementPossible(Chessboard *e)
+std::vector<Square> Player::listeMouvementPossible(Chessboard *e)
 {
-    std::vector <Case> listeCase=pieceSelected->mouvementsPossible(e);
+    std::vector <Square> listeCase=selectedPiece->availableMovements(e);
 
     if(canCastleLeft(e))
-        listeCase.push_back(Case(2,kingPlayer->y()));
+        listeCase.push_back(Square(2,kingPlayer->y()));
 
     if(canCastleRight(e))
-        listeCase.push_back(Case(6,kingPlayer->y()));
+        listeCase.push_back(Square(6,kingPlayer->y()));
 
     if(canEnPassantDkingte(e))
-        listeCase.push_back(Case(pieceSelected->x()+1,pieceSelected->y()+getSens()));
+        listeCase.push_back(Square(selectedPiece->x()+1,selectedPiece->y()+getSens()));
 
     if(canEnPassantLeft(e))
-        listeCase.push_back(Case(pieceSelected->x()-1,pieceSelected->y()+getSens()));
+        listeCase.push_back(Square(selectedPiece->x()-1,selectedPiece->y()+getSens()));
 
     return listeCase;
 }
 
 bool Player::isCastleRight(Chessboard *e,int caseX,int caseY){
-//    return(!kingPlayer->hadMove()
-//            && pieceSelected==kingPlayer
-//            && pieceSelected->y()==caseY
-//            && pieceSelected->x()+2==caseX);
-
-    return canCastleRight(e) && pieceSelected->y()==caseY && pieceSelected->x()+2==caseX;
+    return canCastleRight(e) && selectedPiece->y()==caseY && selectedPiece->x()+2==caseX;
 }
 
 bool Player::isCastleLeft(Chessboard *e,int caseX,int caseY){
-//    return(!kingPlayer->hadMove()
-//            && pieceSelected==kingPlayer
-//            && pieceSelected->y()==caseY
-//            && pieceSelected->x()-2==caseX);
-
-    return canCastleLeft(e) && pieceSelected->y()==caseY && pieceSelected->x()-2==caseX;
+    return canCastleLeft(e) && selectedPiece->y()==caseY && selectedPiece->x()-2==caseX;
 }
 
 bool Player::isEnPassantDkingte(Chessboard *e,int caseX,int caseY){
 
-    return canEnPassantDkingte(e) && caseX==pieceSelected->x()+1 && caseY==pieceSelected->y()+getSens();
+    return canEnPassantDkingte(e) && caseX==selectedPiece->x()+1 && caseY==selectedPiece->y()+getSens();
 }
 
 bool Player::isEnPassantLeft(Chessboard *e,int caseX,int caseY){
-    return canEnPassantLeft(e) && caseX==pieceSelected->x()-1 && caseY==pieceSelected->y()+getSens();
+    return canEnPassantLeft(e) && caseX==selectedPiece->x()-1 && caseY==selectedPiece->y()+getSens();
 }
 
 bool Player::canCastleLeft(Chessboard *e)
 {
-    if(kingPlayer==pieceSelected && !kingPlayer->hadMove())
+    if(kingPlayer==selectedPiece && !kingPlayer->hadMove())
     {
         Rook *tGauche=dynamic_cast<Rook*>(e->getPiece(0,kingPlayer->y()));
         if(tGauche!=nullptr && !tGauche->hadMove())
         {
             if(e->getPiece(1,kingPlayer->y())==NULL && e->getPiece(2,kingPlayer->y())==NULL && e->getPiece(3,kingPlayer->y())==NULL){
 
-                if(!adverse->viseCase(2,kingPlayer->y(),e) &&
-                   !adverse->viseCase(3,kingPlayer->y(),e) &&
-                   !adverse->viseCase(4,kingPlayer->y(),e))
+                if(!opponent->viseCase(2,kingPlayer->y(),e) &&
+                   !opponent->viseCase(3,kingPlayer->y(),e) &&
+                   !opponent->viseCase(4,kingPlayer->y(),e))
                 {
                     return true;
                 }
@@ -322,7 +342,7 @@ bool Player::canCastleLeft(Chessboard *e)
 
 bool Player::canCastleRight(Chessboard *e)
 {
-    if(kingPlayer==pieceSelected && !kingPlayer->hadMove())
+    if(kingPlayer==selectedPiece && !kingPlayer->hadMove())
     {
         Rook *tDkingte=dynamic_cast<Rook*>(e->getPiece(7,kingPlayer->y()));
 
@@ -330,9 +350,9 @@ bool Player::canCastleRight(Chessboard *e)
         {
             if(e->getPiece(5,kingPlayer->y())==NULL && e->getPiece(6,kingPlayer->y())==NULL){
 
-                    if(!adverse->viseCase(4,kingPlayer->y(),e) &&
-                       !adverse->viseCase(5,kingPlayer->y(),e) &&
-                       !adverse->viseCase(6,kingPlayer->y(),e))
+                    if(!opponent->viseCase(4,kingPlayer->y(),e) &&
+                       !opponent->viseCase(5,kingPlayer->y(),e) &&
+                       !opponent->viseCase(6,kingPlayer->y(),e))
                     {
                         return true;
                     }
@@ -344,7 +364,7 @@ bool Player::canCastleRight(Chessboard *e)
 
 bool Player::canEnPassantDkingte(Chessboard *e)
 {
-    Pawn *pionPlayer=dynamic_cast<Pawn*> (pieceSelected);
+    Pawn *pionPlayer=dynamic_cast<Pawn*> (selectedPiece);
 
     if(pionPlayer!=nullptr){
 
@@ -363,7 +383,7 @@ bool Player::canEnPassantDkingte(Chessboard *e)
 }
 bool Player::canEnPassantLeft(Chessboard *e)
 {
-    Pawn *pionPlayer=dynamic_cast<Pawn*> (pieceSelected);
+    Pawn *pionPlayer=dynamic_cast<Pawn*> (selectedPiece);
 
         if(pionPlayer!=nullptr){
 
@@ -380,9 +400,9 @@ bool Player::canEnPassantLeft(Chessboard *e)
 }
 bool Player::viseCase(int x,int y,Chessboard *e)
 {
-    for(unsigned int i=0; i<listePiecePlayer.size(); i++)
+    for(unsigned int i=0; i<playerPieces.size(); i++)
     {
-        std::vector<Case> caseViseeParPlayer=listePiecePlayer[i]->mouvementsPossible(e);
+        std::vector<Square> caseViseeParPlayer=playerPieces[i]->availableMovements(e);
 
         for(unsigned int j=0; j<caseViseeParPlayer.size(); j++)
         {
@@ -401,7 +421,7 @@ void Player::selectPiece(int caseX,int caseY,Chessboard *e){
         if(pTmp!=NULL)
         {
             if(isWhite()==pTmp->isWhite() )
-                pieceSelected=pTmp;
+                selectedPiece=pTmp;
 //                std::cout << "coucou";
         }
 }

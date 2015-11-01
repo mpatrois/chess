@@ -25,9 +25,9 @@ Pawn *Pawn::clone()
     return new Pawn(*this);
 };
 
-std::vector<Case> Pawn::mouvementsPossible(Chessboard *e)
+std::vector<Square> Pawn::availableMovements(Chessboard *e)
 {
-    std::vector<Case> listeCase;
+    std::vector<Square> listeCase;
 
     int sens=-1;
 
@@ -36,13 +36,13 @@ std::vector<Case> Pawn::mouvementsPossible(Chessboard *e)
 
     if(e->getPiece(x(),y()+1*sens)==NULL)
     {
-        Case c(x(),y()+1*sens);
+        Square c(x(),y()+1*sens);
 
         listeCase.push_back(c);
 
         if(((y()==6 && sens==-1) || (y()==1 && sens==1)) && e->getPiece(x(),y()+2*sens)==NULL )
         {
-            Case c(x(),y()+2*sens);
+            Square c(x(),y()+2*sens);
             listeCase.push_back(c);
         }
     }
@@ -51,7 +51,7 @@ std::vector<Case> Pawn::mouvementsPossible(Chessboard *e)
     {
         if(e->getPiece(x()+1,y()+1*sens)->isWhite()!=m_white)
         {
-            Case c(x()+1,y()+1*sens);
+            Square c(x()+1,y()+1*sens);
             listeCase.push_back(c);
         }
     }
@@ -59,7 +59,7 @@ std::vector<Case> Pawn::mouvementsPossible(Chessboard *e)
     {
         if(e->getPiece(x()-1,y()+1*sens)->isWhite()!=m_white)
         {
-            Case c(x()-1,y()+1*sens);
+            Square c(x()-1,y()+1*sens);
             listeCase.push_back(c);
         }
     }

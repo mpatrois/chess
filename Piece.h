@@ -4,32 +4,33 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <iostream>
 /**
- * Declaration d'une classe modélisant une piece de jeu d'echec.
+ * Declaration d'une classe modélisant une piece de jeu d'check.
  */
 class Chessboard;
 
-struct Case
+struct Square
 {
     int x;
     int y;
 
-    Case(){};
+    Square(){};
 
-    Case(int _x,int _y)
+    Square(int _x,int _y)
     {
         x=_x;
         y=_y;
     };
 };
 
-struct Coup{
-    Case caseDepart;
-    Case caseArrivee;
+struct Blow{
+    Square caseDepart;
+    Square caseArrivee;
 
-    Coup(){};
+    Blow(){};
 
-    Coup(Case cd,Case ca){
+    Blow(Square cd,Square ca){
         caseDepart=cd;
         caseArrivee=ca;
     }
@@ -74,7 +75,7 @@ class Piece
 
         bool isBlack();
 
-        void affiche();
+        void display();
 
         static sf::Texture texturePiece;
 
@@ -83,19 +84,20 @@ class Piece
             texturePiece.loadFromFile("ressources/chess.png");
         };
 
-        virtual char typePiece()=0;
+        virtual char typePiece() = 0;
 
         sf::Sprite getSprite()
         {
             return spritePiece;
         };
-        void afficheGraphique(sf::RenderWindow &app)
+
+        void graphicDisplay(sf::RenderWindow &app)
         {
             spritePiece.setPosition(x()*60,y()*60);
             app.draw(spritePiece);
         }
 
-        virtual std::vector<Case> mouvementsPossible(Chessboard *e)=0;
+        virtual std::vector<Square> availableMovements(Chessboard *e)=0;
 
 };
 

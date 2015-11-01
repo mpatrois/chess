@@ -68,13 +68,13 @@ namespace Utility
         std::vector<PartieD> listParties;
 
         std::string name;
-        std::string coups;
+        std::string blows;
 
         std::ifstream infile("Games.txt");
 
-        while(infile >> name >> coups)
+        while(infile >> name >> blows)
         {
-            listParties.push_back(PartieD(name,coups));
+            listParties.push_back(PartieD(name,blows));
         }
 
         infile.close();

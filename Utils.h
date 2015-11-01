@@ -31,7 +31,7 @@ struct Partie
 struct PartieD
 {
     std::string name;
-    std::string coups;
+    std::string blows;
 
     PartieD() {};
 
@@ -39,7 +39,7 @@ struct PartieD
     {
         name=nam;
 
-        coups=cps;
+        blows=cps;
     };
 };
 
