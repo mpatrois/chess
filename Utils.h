@@ -26,5 +26,5 @@ namespace Utility
 
     std::vector<Partie> listePartie();
 
-    bool inPlateau(int x,int y);
+    bool inChessboard(int x,int y);
 }

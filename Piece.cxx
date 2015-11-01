@@ -38,7 +38,7 @@ void Piece::move( int x, int y ,Chessboard *e)
 
     if(pieceAdverse!=NULL)
     {
-        Player *opponent=e->getAdverse(m_white);
+        Player *opponent=e->getOpponent(m_white);
         opponent->loosePiece(pieceAdverse);
         e->removePiece(x,y);
     };

@@ -42,7 +42,7 @@ std::vector<Square> Knight::availableMovements(Chessboard *e)
         int dx=allMoves[i].x;
         int dy=allMoves[i].y;
 
-        if(Utility::inPlateau(dx,dy))
+        if(Utility::inChessboard(dx,dy))
         {
             if(e->getPiece(dx,dy)==NULL)
             {

@@ -115,7 +115,7 @@ Chessboard::~Chessboard()
  */
 Piece* Chessboard::getPiece( int x, int y )
 {
-    if(Utility::inPlateau(x,y))
+    if(Utility::inChessboard(x,y))
         return m_cases[y*8+x];
     else
         return NULL;
@@ -136,7 +136,7 @@ bool Chessboard::put( Piece* p )
 {
     if(p!=NULL)
     {
-        if(Utility::inPlateau(p->x(),p->y()))
+        if(Utility::inChessboard(p->x(),p->y()))
         {
             int pos=p->y()*8+p->x();
 
@@ -164,7 +164,7 @@ bool Chessboard::put( Piece* p )
  */
 void Chessboard::removePiece( int x, int y )
 {
-    if(Utility::inPlateau(x,y))
+    if(Utility::inChessboard(x,y))
         m_cases[y*8+x]=NULL;
 }
 
@@ -285,7 +285,7 @@ void Chessboard::savePartie(std::string nameFile)
     myfile.close();
 };
 
-Player *Chessboard::getAdverse(bool colPlayer){
+Player *Chessboard::getOpponent(bool colPlayer){
      if(colPlayer)
         return players[1];
      else

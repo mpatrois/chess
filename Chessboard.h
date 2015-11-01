@@ -14,7 +14,6 @@
 #include <fstream>
 
 struct Partie;
-struct Partie;
 
 //#include "Utils.h"
 /**
@@ -104,7 +103,7 @@ public:
 
     void savePartie(std::string nameFile);
 
-    Player *getAdverse(bool coulPlayer);
+    Player *getOpponent(bool coulPlayer);
 
     void addBlow(Square cd,Square ca);
 
