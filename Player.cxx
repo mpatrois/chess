@@ -244,14 +244,14 @@ bool Player::move(int caseX,int caseY,Chessboard *e)
             tGauche->move(3,selectedPiece->y(),e);
         }
 
-        if(isEnPassantDkingte(e,caseX,caseY)){
+        if(isEnPassantRight(e,caseX,caseY)){
             opponent->loosePiece(e->getPiece(caseX,caseY+(getSens()*-1)));
-            e->enleverPiece(caseX,caseY+(getSens()*-1));
+            e->removePiece(caseX,caseY+(getSens()*-1));
         }
 
         if(isEnPassantLeft(e,caseX,caseY)){
             opponent->loosePiece(e->getPiece(caseX,caseY+(getSens()*-1)));
-            e->enleverPiece(caseX,caseY+(getSens()*-1));
+            e->removePiece(caseX,caseY+(getSens()*-1));
         }
 
         selectedPiece->move(caseX,caseY,e);
@@ -293,7 +293,7 @@ std::vector<Square> Player::listeMouvementPossible(Chessboard *e)
     if(canCastleRight(e))
         listeCase.push_back(Square(6,kingPlayer->y()));
 
-    if(canEnPassantDkingte(e))
+    if(canEnPassantRight(e))
         listeCase.push_back(Square(selectedPiece->x()+1,selectedPiece->y()+getSens()));
 
     if(canEnPassantLeft(e))
@@ -310,9 +310,8 @@ bool Player::isCastleLeft(Chessboard *e,int caseX,int caseY){
     return canCastleLeft(e) && selectedPiece->y()==caseY && selectedPiece->x()-2==caseX;
 }
 
-bool Player::isEnPassantDkingte(Chessboard *e,int caseX,int caseY){
-
-    return canEnPassantDkingte(e) && caseX==selectedPiece->x()+1 && caseY==selectedPiece->y()+getSens();
+bool Player::isEnPassantRight(Chessboard *e,int caseX,int caseY){
+    return canEnPassantRight(e) && caseX==selectedPiece->x()+1 && caseY==selectedPiece->y()+getSens();
 }
 
 bool Player::isEnPassantLeft(Chessboard *e,int caseX,int caseY){
@@ -362,20 +361,23 @@ bool Player::canCastleRight(Chessboard *e)
     return false;
 }
 
-bool Player::canEnPassantDkingte(Chessboard *e)
+bool Player::canEnPassantRight(Chessboard *e)
 {
     Pawn *pionPlayer=dynamic_cast<Pawn*> (selectedPiece);
 
     if(pionPlayer!=nullptr){
 
+        Pawn *pionRight=dynamic_cast<Pawn*> (e->getPiece(pionPlayer->x()+1,pionPlayer->y()));
 
-        Pawn *pionDkingte=dynamic_cast<Pawn*> (e->getPiece(pionPlayer->x()+1,pionPlayer->y()));
+        if(pionRight!=nullptr){
 
-        if(pionDkingte!=nullptr){
+            Blow c=e->getLastBlow();
 
-            if(pionDkingte->getNbMove()==1 && e->getPiece(pionPlayer->x()+1,pionPlayer->y()+getSens())==NULL ){
+            if(pionRight->x()==c.caseArrivee.x && pionRight->y()==c.caseArrivee.y  ){
                 return true;
             }
+
+
         }
     }
 
@@ -391,7 +393,8 @@ bool Player::canEnPassantLeft(Chessboard *e)
 
             if(pionGauche!=nullptr){
 
-                if(pionGauche->getNbMove()==1 && e->getPiece(pionPlayer->x()-1,pionPlayer->y()+getSens())==NULL ){
+                Blow c=e->getLastBlow();
+                if(pionGauche->x()==c.caseArrivee.x && pionGauche->y()==c.caseArrivee.y  ){
                     return true;
                 }
             }
@@ -422,6 +425,5 @@ void Player::selectPiece(int caseX,int caseY,Chessboard *e){
         {
             if(isWhite()==pTmp->isWhite() )
                 selectedPiece=pTmp;
-//                std::cout << "coucou";
         }
 }

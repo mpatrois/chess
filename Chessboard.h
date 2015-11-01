@@ -103,7 +103,7 @@ public:
      * @return 0 si aucune piece n'est sur cette square et le pointeur
      * vers la piece enlevee sinon.
      */
-    void enleverPiece( int x, int y );
+    void removePiece( int x, int y );
 
     /**
      * Affiche l'chessboard avec des # pour les cases noires et . pour
@@ -123,6 +123,8 @@ public:
     Player *getAdverse(bool coulPlayer);
 
     void addBlow(Square cd,Square ca);
+
+    Blow getLastBlow();
 
 };
 

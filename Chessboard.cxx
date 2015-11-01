@@ -180,7 +180,7 @@ bool Chessboard::deplacer( Piece* p, int x, int y )
  * @return 0 si aucune piece n'est sur cette square et le pointeur
  * vers la piece enlevee sinon.
  */
-void Chessboard::enleverPiece( int x, int y )
+void Chessboard::removePiece( int x, int y )
 {
     if(Utility::inPlateau(x,y))
         m_cases[y*8+x]=NULL;
@@ -304,9 +304,9 @@ void Chessboard::savePartie(std::string nameFile)
 };
 
 Player *Chessboard::getAdverse(bool colPlayer){
-     if(colPlayer){
+     if(colPlayer)
         return players[1];
-    }else
+     else
         return players[0];
 }
 
@@ -314,30 +314,10 @@ void Chessboard::addBlow(Square cd,Square ca){
     listeBlows.push_back(Blow(cd,ca));
 }
 
-//void Chessboard::openPartie()
-//{
-//    ifstream infile("example.txt");
-//    string piecesWhitePlayer;
-//    string piecesBlackPlayer;
-//    if(infile >> tour >> piecesWhitePlayer >> piecesBlackPlayer)
-//    {
-//
-//    }
-//    else
-//    {
-//        cout << "Fichier non valide" << endl;
-//    }
-//    infile.close();
-//
-//    if(players[0]!=NULL)
-//        delete players[0];
-//
-//    if(players[1]!=NULL)
-//        delete players[1];
-//
-//    players[0]=new WhitePlayer(Utility::split(piecesWhitePlayer,","));
-//    players[1]=new BlackPlayer(Utility::split(piecesBlackPlayer,","));
-//
-//    setPlayer(players[0],players[1]);
-//
-//};
+
+Blow Chessboard::getLastBlow(){
+    if(listeBlows.size()>1)
+        return listeBlows.back();
+    else
+        return Blow();
+}

@@ -86,9 +86,9 @@ class Player
 
         bool canCastleLeft(Chessboard *e);
 
-        bool isEnPassantDkingte(Chessboard *e,int caseX,int caseY);
+        bool isEnPassantRight(Chessboard *e,int caseX,int caseY);
 
-        bool canEnPassantDkingte(Chessboard *e);
+        bool canEnPassantRight(Chessboard *e);
 
         bool isEnPassantLeft(Chessboard *e,int caseX,int caseY);
 

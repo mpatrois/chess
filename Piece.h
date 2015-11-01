@@ -15,7 +15,10 @@ struct Square
     int x;
     int y;
 
-    Square(){};
+    Square(){
+        x=-1;
+        y=-1;
+    };
 
     Square(int _x,int _y)
     {

@@ -42,10 +42,10 @@ void Piece::move( int x, int y ,Chessboard *e)
     {
         Player *opponent=e->getAdverse(m_white);
         opponent->loosePiece(pieceAdverse);
-        e->enleverPiece(x,y);
+        e->removePiece(x,y);
     };
 
-    e->enleverPiece(m_x,m_y);
+    e->removePiece(m_x,m_y);
 
     m_x = x;
     m_y = y;
