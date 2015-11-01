@@ -1,3 +1,4 @@
 savedGames.txt
 *.cbp
 *.o
+CMakeLists.txt
