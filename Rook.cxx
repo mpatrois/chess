@@ -64,8 +64,8 @@ bool Rook::hadMove(){
     return moved;
 }
 
-void Rook::move( int x, int y )
+void Rook::move( int x, int y,Chessboard *e)
 {
     moved=true;
-    Piece::move(x,y);
+    Piece::move(x,y,e);
 }

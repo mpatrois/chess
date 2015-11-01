@@ -64,7 +64,7 @@ class Piece
 
         void init( int x, int y, bool white );
 
-        virtual void move( int x, int y );
+        virtual void move( int x, int y ,Chessboard *e);
 
         int x();
 

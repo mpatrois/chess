@@ -106,8 +106,8 @@ bool King::hadMove(){
     return moved;
 }
 
-void King::move( int x, int y )
+void King::move( int x, int y,Chessboard *e )
 {
     moved=true;
-    Piece::move(x,y);
+    Piece::move(x,y,e);
 }

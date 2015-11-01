@@ -70,7 +70,7 @@ int Pawn::getNbMove(){
     return nbMove;
 }
 
-void Pawn::move( int x, int y ){
+void Pawn::move( int x, int y,Chessboard *e ){
     nbMove++;
-    Piece::move(x,y);
+    Piece::move(x,y,e);
 }

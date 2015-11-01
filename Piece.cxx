@@ -5,6 +5,7 @@
  */
 
 // A besoin de la declaration de la classe
+#include "Player.h"
 #include "Piece.h"
 #include "Chessboard.h"
 #include <iostream>
@@ -33,10 +34,23 @@ Piece::~Piece()
 
 }
 
-void Piece::move( int x, int y )
+void Piece::move( int x, int y ,Chessboard *e)
 {
+    Piece *pieceAdverse=e->getPiece(x,y);
+
+    if(pieceAdverse!=NULL)
+    {
+        Player *adverse=e->getAdverse(m_white);
+        adverse->perdPiece(pieceAdverse);
+        e->enleverPiece(x,y);
+    };
+
+    e->enleverPiece(m_x,m_y);
+
     m_x = x;
     m_y = y;
+
+    e->placer(this);
 }
 
 int Piece::x()

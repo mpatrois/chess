@@ -26,7 +26,7 @@ class King : public Piece
 
         bool hadMove();
 
-        void move( int x, int y );
+        void move( int x, int y,Chessboard *e);
 
 //        void setRook(Piece* trDrte,Piece* trGche);
 };

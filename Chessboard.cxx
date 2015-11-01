@@ -342,11 +342,11 @@ void Chessboard::savePartie(std::string nameFile)
     myfile.close();
 };
 
-Player *Chessboard::getAdverse(bool coulPlayer){
-    if(coulPlayer == joueurs[tour]->isWhite())
-        return joueurs[tour];
-    else
-        return joueurs[(tour+1)%2];
+Player *Chessboard::getAdverse(bool colPlayer){
+     if(colPlayer){
+        return joueurs[1];
+    }else
+        return joueurs[0];
 }
 
 void Chessboard::addCoup(Case cd,Case ca){

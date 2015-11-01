@@ -22,7 +22,7 @@ class Pawn : public Piece
 
     int getNbMove();
 
-     void move( int x, int y );
+     void move( int x, int y,Chessboard *e );
 };
 
 #endif // PION_H

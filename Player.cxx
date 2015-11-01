@@ -123,19 +123,7 @@ bool Player::willBeEchec(int caseX,int caseY)
 
     Chessboard *myChessboard=new Chessboard(myPlayer,myPlayerAdverse);
 
-    int lastX=myPlayer->pieceSelected->x();
-    int lastY=myPlayer->pieceSelected->y();
-
-    myPlayer->pieceSelected->move(caseX,caseY);
-
-    if(myChessboard->getPiece(caseX,caseY)!=NULL)
-    {
-        myPlayerAdverse->perdPiece(myChessboard->getPiece(caseX,caseY));
-        myChessboard->enleverPiece(caseX,caseY);
-    };
-
-    myChessboard->enleverPiece(lastX,lastY);
-    myChessboard->placer(myPlayer->pieceSelected);
+    myPlayer->pieceSelected->move(caseX,caseY,myChessboard);
 
     bool echecFuture=myPlayer->isEchec(myChessboard);
 
@@ -217,17 +205,13 @@ bool Player::move(int caseX,int caseY,Chessboard *e)
         if(isCastleRight(e,caseX,caseY))
         {
             Rook *tDkingte=dynamic_cast<Rook *>(e->getPiece(7,pieceSelected->y()));
-            e->enleverPiece(tDkingte->x(),tDkingte->y());
-            tDkingte->move(5,pieceSelected->y());
-            e->placer(tDkingte);
+            tDkingte->move(5,pieceSelected->y(),e);
         }
 
         if(isCastleLeft(e,caseX,caseY))
         {
             Rook *tGauche=dynamic_cast<Rook *>(e->getPiece(0,pieceSelected->y()));
-            e->enleverPiece(tGauche->x(),tGauche->y());
-            tGauche->move(3,pieceSelected->y());
-            e->placer(tGauche);
+            tGauche->move(3,pieceSelected->y(),e);
         }
 
         if(isEnPassantDkingte(e,caseX,caseY)){
@@ -240,16 +224,7 @@ bool Player::move(int caseX,int caseY,Chessboard *e)
             e->enleverPiece(caseX,caseY+(getSens()*-1));
         }
 
-        pieceSelected->move(caseX,caseY);
-
-        if(e->getPiece(caseX,caseY)!=NULL)
-        {
-            adverse->perdPiece(e->getPiece(caseX,caseY));
-            e->enleverPiece(caseX,caseY);
-        };
-
-        e->enleverPiece(lastX,lastY);
-        e->placer(pieceSelected);
+        pieceSelected->move(caseX,caseY,e);
 
         pieceSelected=NULL;
 

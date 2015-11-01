@@ -23,7 +23,7 @@ class Rook : public Piece
 
     bool hadMove();
 
-    void move( int x, int y );
+    void move( int x, int y,Chessboard *e );
 };
 
 #endif // TOUR_H
