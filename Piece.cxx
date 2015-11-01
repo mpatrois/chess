@@ -40,8 +40,8 @@ void Piece::move( int x, int y ,Chessboard *e)
 
     if(pieceAdverse!=NULL)
     {
-        Player *adverse=e->getAdverse(m_white);
-        adverse->perdPiece(pieceAdverse);
+        Player *opponent=e->getAdverse(m_white);
+        opponent->loosePiece(pieceAdverse);
         e->enleverPiece(x,y);
     };
 
@@ -50,7 +50,7 @@ void Piece::move( int x, int y ,Chessboard *e)
     m_x = x;
     m_y = y;
 
-    e->placer(this);
+    e->put(this);
 }
 
 int Piece::x()
@@ -73,7 +73,7 @@ bool Piece::isBlack()
     return !m_white;
 }
 
-void Piece::affiche()
+void Piece::display()
 {
     std::cout << m_x << " " <<m_y << " ";
 

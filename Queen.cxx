@@ -24,9 +24,9 @@ Queen *Queen::clone()
     return new Queen(*this) ;
 };
 
-std::vector<Case> Queen::mouvementsPossible(Chessboard *e)
+std::vector<Square> Queen::availableMovements(Chessboard *e)
 {
-    std::vector<Case> listeCase;
+    std::vector<Square> listeCase;
 
     for (int vx=-1; vx<2; vx++)
         for (int vy=-1; vy<2; vy++)
@@ -42,7 +42,7 @@ std::vector<Case> Queen::mouvementsPossible(Chessboard *e)
                 {
                     if(e->getPiece(dx,dy)==NULL)
                     {
-                        Case c(dx,dy);
+                        Square c(dx,dy);
 
                         listeCase.push_back(c);
                     }
@@ -50,7 +50,7 @@ std::vector<Case> Queen::mouvementsPossible(Chessboard *e)
                     {
                         if(e->getPiece(dx,dy)->isWhite()!=m_white)
                         {
-                            Case c(dx,dy);
+                            Square c(dx,dy);
 
                             listeCase.push_back(c);
                         }

@@ -18,7 +18,7 @@ class Pawn : public Piece
 
     Pawn *clone();
 
-    std::vector<Case> mouvementsPossible(Chessboard *e);
+    std::vector<Square> availableMovements(Chessboard *e);
 
     int getNbMove();
 

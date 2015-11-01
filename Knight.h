@@ -8,15 +8,15 @@ class Knight : public Piece
 {
     public:
 
-    Knight(int x, int y, bool white);
+        Knight(int x, int y, bool white);
 
-    Knight *clone();
+        Knight *clone();
 
-    virtual ~Knight();
+        virtual ~Knight();
 
-    virtual char typePiece();
-
-    std::vector<Case> mouvementsPossible(Chessboard *e);
+        std::vector<Square> availableMovements(Chessboard *e);
+        
+        virtual char typePiece();
 };
 
 #endif // CAVALIER_H

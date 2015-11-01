@@ -7,10 +7,11 @@
 class King : public Piece
 {
     private:
-    bool moved;
+        bool moved;
 
-    Piece *tourDkingte;
-    Piece *tourGauche;
+        Piece *tourDkingte;
+
+        Piece *tourGauche;
 
     public:
 
@@ -22,7 +23,7 @@ class King : public Piece
 
         King *clone();
 
-        std::vector<Case> mouvementsPossible(Chessboard *e);
+        std::vector<Square> availableMovements(Chessboard *e);
 
         bool hadMove();
 

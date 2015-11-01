@@ -16,7 +16,7 @@ class Queen : public Piece
 
         virtual char typePiece();;
 
-        std::vector<Case> mouvementsPossible(Chessboard *e);
+        std::vector<Square> availableMovements(Chessboard *e);
 
 };
 

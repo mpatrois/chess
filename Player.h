@@ -17,7 +17,21 @@
 
 class Player
 {
+    private:
+
+        bool check;
+
+    protected:
+
+        std::vector<Piece *> playerPieces;
+
+        King* kingPlayer;
+
+        Piece* selectedPiece;
+
     public:
+
+        Player *opponent;
 
         Player();
 
@@ -25,31 +39,23 @@ class Player
 
         Player(std::vector<std::string> listPieces);
 
-        Player *adverse;
-
         virtual ~Player();
 
-        std::vector<Piece *> getPieces()
-        {
-            return listePiecePlayer;
-        };
+        std::vector<Piece *> getPieces();
 
-        void perdPiece(Piece *p);
+        void loosePiece(Piece *p);
 
         void affichePieceJTerminal();
 
-        void affichePieceJGraphique(sf::RenderWindow &app,Chessboard *e);
+        void displayPlayerPiece(sf::RenderWindow &app,Chessboard *e);
 
-        void placer(Chessboard *e);
+        void put(Chessboard *e);
 
         virtual bool isWhite() const = 0 ;
 
-        Case getPosKingPlayer()
-        {
-            return Case(kingPlayer->x(),kingPlayer->y());
-        };
+        Square getPosKingPlayer();
 
-        virtual Player *clone()=0;
+        virtual Player *clone() = 0;
 
         bool isChessMath(Chessboard *e);
 
@@ -63,23 +69,12 @@ class Player
 
         void setPlayerAdverse(Player *jAdverse)
         {
-            adverse=jAdverse;
+            opponent=jAdverse;
         };
 
-        void savePlayer(std::ofstream &myfile)
-        {
-            for(unsigned int i=0; i<listePiecePlayer.size(); i++)
-            {
-                if(i!=0)
-                {
-                    myfile<<",";
-                }
-                myfile << listePiecePlayer[i]->typePiece() << "|" << listePiecePlayer[i]->x() << "|" << listePiecePlayer[i]->y();
-            }
-            myfile << std::endl;
-        };
+        void savePlayer(std::ofstream &myfile);
 
-        std::vector<Case> listeMouvementPossible(Chessboard *e);
+        std::vector<Square> listeMouvementPossible(Chessboard *e);
 
         bool viseCase(int x, int y,Chessboard *e);
 
@@ -102,19 +97,6 @@ class Player
         int getSens();
 
         void selectPiece(int x,int y,Chessboard *e);
-
-
-    protected:
-
-        std::vector<Piece *> listePiecePlayer;
-
-        King* kingPlayer;
-
-        Piece* pieceSelected;
-
-    private:
-
-        bool echec;
 
 };
 

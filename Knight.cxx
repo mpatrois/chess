@@ -23,19 +23,19 @@ char Knight::typePiece()
         return 'c';
 };
 
-std::vector<Case> Knight::mouvementsPossible(Chessboard *e)
+std::vector<Square> Knight::availableMovements(Chessboard *e)
 {
-    std::vector<Case> allMoves;
-    std::vector<Case> listeCase;
+    std::vector<Square> allMoves;
+    std::vector<Square> listeCase;
 
-    allMoves.push_back(Case(x() + 1 ,y() + 2));
-    allMoves.push_back(Case(x() - 1 ,y() + 2));
-    allMoves.push_back(Case(x() + 2 ,y() - 1));
-    allMoves.push_back(Case(x() + 2 ,y() + 1));
-    allMoves.push_back(Case(x() + 1 ,y() - 2));
-    allMoves.push_back(Case(x() - 1 ,y() - 2));
-    allMoves.push_back(Case(x() - 2 ,y() + 1));
-    allMoves.push_back(Case(x() - 2 ,y() - 1));
+    allMoves.push_back(Square(x() + 1 ,y() + 2));
+    allMoves.push_back(Square(x() - 1 ,y() + 2));
+    allMoves.push_back(Square(x() + 2 ,y() - 1));
+    allMoves.push_back(Square(x() + 2 ,y() + 1));
+    allMoves.push_back(Square(x() + 1 ,y() - 2));
+    allMoves.push_back(Square(x() - 1 ,y() - 2));
+    allMoves.push_back(Square(x() - 2 ,y() + 1));
+    allMoves.push_back(Square(x() - 2 ,y() - 1));
 
     for (unsigned int i=0; i<allMoves.size(); i++)
     {

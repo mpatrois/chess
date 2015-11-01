@@ -1,7 +1,7 @@
 #include "Bishop.h"
 #include "Chessboard.h"
 
-Bishop::Bishop(int x, int y, bool white):Piece(x,y,white)
+Bishop::Bishop(int x, int y, bool white) : Piece(x,y,white)
 {
     if(m_white)
         spritePiece.setTextureRect(sf::IntRect(60, 120, 60, 60));
@@ -9,24 +9,17 @@ Bishop::Bishop(int x, int y, bool white):Piece(x,y,white)
         spritePiece.setTextureRect(sf::IntRect(0, 120, 60, 60));
 };
 
-Bishop::~Bishop() {};
-
-char Bishop::typePiece()
-{
-    if(m_white)
-        return 'F';
-    else
-        return 'f';
-};
+Bishop::~Bishop() {}
 
 Bishop *Bishop::clone()
 {
     return new Bishop(*this) ;
 };
 
-std::vector<Case> Bishop::mouvementsPossible(Chessboard *e)
+std::vector<Square> Bishop::availableMovements(Chessboard *e)
 {
-    std::vector<Case> listeCase;
+    std::vector<Square> listeCase;
+    
     for(int vx=-1; vx<2; vx++)
     {
         for(int vy=-1; vy<2; vy++)
@@ -42,14 +35,14 @@ std::vector<Case> Bishop::mouvementsPossible(Chessboard *e)
                     {
                         if(e->getPiece(dx,dy)==NULL)
                         {
-                            Case c(dx,dy);
+                            Square c(dx,dy);
                             listeCase.push_back(c);
                         }
                         else
                         {
                             if(e->getPiece(dx,dy)->isWhite()!=m_white)
                             {
-                                Case c(dx,dy);
+                                Square c(dx,dy);
                                 listeCase.push_back(c);
                             }
                             stop=true;
@@ -63,3 +56,11 @@ std::vector<Case> Bishop::mouvementsPossible(Chessboard *e)
     }
     return listeCase;
 }
+
+char Bishop::typePiece()
+{
+    if(m_white)
+        return 'F';
+    else
+        return 'f';
+};

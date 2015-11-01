@@ -28,9 +28,9 @@ King *King::clone()
     return new King(*this) ;
 };
 
-std::vector<Case> King::mouvementsPossible(Chessboard *e)
+std::vector<Square> King::availableMovements(Chessboard *e)
 {
-    std::vector<Case> listeCase;
+    std::vector<Square> listeCase;
     for (int vx=-1; vx<2; vx++)
         for (int vy=-1; vy<2; vy++)
         {
@@ -43,14 +43,14 @@ std::vector<Case> King::mouvementsPossible(Chessboard *e)
                 {
                     if(e->getPiece(dx,dy)==NULL)
                     {
-                        Case c(dx,dy);
+                        Square c(dx,dy);
                         listeCase.push_back(c);
                     }
                     else
                     {
                         if(e->getPiece(dx,dy)->isWhite()!=m_white)
                         {
-                            Case c(dx,dy);
+                            Square c(dx,dy);
                             listeCase.push_back(c);
                         }
                     }
@@ -62,20 +62,20 @@ std::vector<Case> King::mouvementsPossible(Chessboard *e)
 
 //        if(!hadMove())
 //        {
-//            Player *adverse=e->getAdverse(isWhite());
-////            std::cout << adverse->isWhite();
+//            Player *opponent=e->getAdverse(isWhite());
+////            std::cout << opponent->isWhite();
 //            Rook *tGauche=dynamic_cast<Rook*>(e->getPiece(0,y()));
 //
 //            if(tGauche!=nullptr && !tGauche->hadMove())
 //            {
 //                if(e->getPiece(1,y())==NULL && e->getPiece(2,y())==NULL){
 ////
-//                        if(!adverse->viseCase(0,y(),e) &&
-//                           !adverse->viseCase(2,y(),e) &&
-//                           !adverse->viseCase(3,y(),e) &&
-//                           !adverse->viseCase(4,y(),e))
+//                        if(!opponent->viseCase(0,y(),e) &&
+//                           !opponent->viseCase(2,y(),e) &&
+//                           !opponent->viseCase(3,y(),e) &&
+//                           !opponent->viseCase(4,y(),e))
 //                        {
-////                            listeCase.push_back(Case(1,y()));
+////                            listeCase.push_back(Square(1,y()));
 //                        }
 //                }
 //            }
@@ -87,12 +87,12 @@ std::vector<Case> King::mouvementsPossible(Chessboard *e)
 //                if(e->getPiece(4,y())==NULL && e->getPiece(5,y())==NULL && e->getPiece(6,y())==NULL){
 //
 //
-//                        if(!adverse->viseCase(7,y(),e) &&
-//                           !adverse->viseCase(5,y(),e) &&
-//                           !adverse->viseCase(4,y(),e) &&
-//                           !adverse->viseCase(3,y(),e))
+//                        if(!opponent->viseCase(7,y(),e) &&
+//                           !opponent->viseCase(5,y(),e) &&
+//                           !opponent->viseCase(4,y(),e) &&
+//                           !opponent->viseCase(3,y(),e))
 //                        {
-//                            listeCase.push_back(Case(5,y()));
+//                            listeCase.push_back(Square(5,y()));
 //                        }
 //                    }
 //
