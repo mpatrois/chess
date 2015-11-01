@@ -124,6 +124,8 @@ public:
 
     void addCoup(Case cd,Case ca);
 
+    Coup getLastBlow();
+
 };
 
 #endif // !defined Chessboard_h

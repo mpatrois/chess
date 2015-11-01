@@ -108,17 +108,10 @@ Chessboard::Chessboard(PartieD p)
 
     for (unsigned int i=0;i<listeCoupsCharge.size();i++ )
     {
-//        std::cout << listeCoupsCharge.size() << i << std::endl;
-
-//        cout << listeCoups[i].caseDepart.x << listeCoups[i].caseDepart.y << "|";
         joueurs[tour]->selectPiece(listeCoupsCharge[i].caseDepart.x,listeCoupsCharge[i].caseDepart.y,this);
         joueurs[tour]->move(listeCoupsCharge[i].caseArrivee.x,listeCoupsCharge[i].caseArrivee.y,this);
-
         tour=(tour+1)%2;
     }
-
-
-
     font.loadFromFile("dreamwalker.ttf");
 
     spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
@@ -353,30 +346,9 @@ void Chessboard::addCoup(Case cd,Case ca){
     listeCoups.push_back(Coup(cd,ca));
 }
 
-//void Chessboard::openPartie()
-//{
-//    ifstream infile("example.txt");
-//    string piecesWhitePlayer;
-//    string piecesBlackPlayer;
-//    if(infile >> tour >> piecesWhitePlayer >> piecesBlackPlayer)
-//    {
-//
-//    }
-//    else
-//    {
-//        cout << "Fichier non valide" << endl;
-//    }
-//    infile.close();
-//
-//    if(joueurs[0]!=NULL)
-//        delete joueurs[0];
-//
-//    if(joueurs[1]!=NULL)
-//        delete joueurs[1];
-//
-//    joueurs[0]=new WhitePlayer(Utility::split(piecesWhitePlayer,","));
-//    joueurs[1]=new BlackPlayer(Utility::split(piecesBlackPlayer,","));
-//
-//    setPlayer(joueurs[0],joueurs[1]);
-//
-//};
+Coup Chessboard::getLastBlow(){
+    if(listeCoups.size()>1)
+    return listeCoups.back();
+    else
+    return Coup();
+}

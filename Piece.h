@@ -14,7 +14,10 @@ struct Case
     int x;
     int y;
 
-    Case(){};
+    Case(){
+        x=-1;
+        y=-1;
+    };
 
     Case(int _x,int _y)
     {
@@ -27,7 +30,8 @@ struct Coup{
     Case caseDepart;
     Case caseArrivee;
 
-    Coup(){};
+    Coup(){
+    };
 
     Coup(Case cd,Case ca){
         caseDepart=cd;
