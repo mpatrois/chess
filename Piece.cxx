@@ -6,7 +6,7 @@
 
 // A besoin de la declaration de la classe
 #include "Piece.h"
-#include "Echiquier.h"
+#include "Chessboard.h"
 #include <iostream>
 sf::Texture Piece::texturePiece=sf::Texture();
 

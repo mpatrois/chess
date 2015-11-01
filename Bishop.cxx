@@ -1,7 +1,7 @@
-#include "Fou.h"
-#include "Echiquier.h"
+#include "Bishop.h"
+#include "Chessboard.h"
 
-Fou::Fou(int x, int y, bool white):Piece(x,y,white)
+Bishop::Bishop(int x, int y, bool white):Piece(x,y,white)
 {
     if(m_white)
         spritePiece.setTextureRect(sf::IntRect(60, 120, 60, 60));
@@ -9,9 +9,9 @@ Fou::Fou(int x, int y, bool white):Piece(x,y,white)
         spritePiece.setTextureRect(sf::IntRect(0, 120, 60, 60));
 };
 
-Fou::~Fou() {};
+Bishop::~Bishop() {};
 
-char Fou::typePiece()
+char Bishop::typePiece()
 {
     if(m_white)
         return 'F';
@@ -19,12 +19,12 @@ char Fou::typePiece()
         return 'f';
 };
 
-Fou *Fou::Clone()
+Bishop *Bishop::clone()
 {
-    return new Fou(*this) ;
+    return new Bishop(*this) ;
 };
 
-std::vector<Case> Fou::mouvementsPossible(Echiquier *e)
+std::vector<Case> Bishop::mouvementsPossible(Chessboard *e)
 {
     std::vector<Case> listeCase;
     for(int vx=-1; vx<2; vx++)

@@ -4,22 +4,22 @@
 #include "Piece.h"
 
 
-class Tour : public Piece
+class Rook : public Piece
 {
     private:
     bool moved;
 
     public:
 
-    Tour(int x, int y, bool white);
+    Rook(int x, int y, bool white);
 
-    virtual ~Tour();
+    virtual ~Rook();
 
     virtual char typePiece();
 
-    Tour *Clone();
+    Rook *clone();
 
-    std::vector<Case> mouvementsPossible(Echiquier *e);
+    std::vector<Case> mouvementsPossible(Chessboard *e);
 
     bool hadMove();
 

@@ -27,6 +27,7 @@ struct Partie
         j2=jo2;
     };
 };
+
 struct PartieD
 {
     std::string name;
@@ -42,13 +43,11 @@ struct PartieD
     };
 };
 
-namespace utility
+namespace Utility
 {
     std::vector<std::string> split(std::string toSplit,std::string delimiter);
 
     int stoi(std::string value);
-
-
 
     std::vector<Partie> listeParties();
 
@@ -56,31 +55,3 @@ namespace utility
 
     bool inPlateau(int x,int y);
 }
-
-class Ressources
-{
-    public:
-
-    static sf::Font font;
-
-    static sf::Texture textureBackground;
-
-    static sf::Texture texturePiece;
-
-    static sf::Texture textureButtonSave;
-
-    static sf::Texture textureButtonBack;
-
-    static void loadRessources()
-    {
-        font.loadFromFile("dreamwalker.ttf");
-
-        textureBackground.loadFromFile("fischer.png");
-
-        texturePiece.loadFromFile("chess.png");
-
-        textureButtonSave.loadFromFile("save.png");
-
-        textureButtonBack.loadFromFile("retour.png");
-    }
-};

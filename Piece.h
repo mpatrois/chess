@@ -1,13 +1,13 @@
-#if !defined Piece_h
+#ifndef Piece_h
 #define Piece_h
 
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
 /**
- * Declaration d'une classe modélisant une piece de jeu d'echec.
+ * Declaration d'une classe modÃ©lisant une piece de jeu d'echec.
  */
-class Echiquier;
+class Chessboard;
 
 struct Case
 {
@@ -21,7 +21,6 @@ struct Case
         x=_x;
         y=_y;
     };
-    ~Case() {};
 };
 
 struct Coup{
@@ -47,7 +46,7 @@ class Piece
 
     protected:
 
-    bool m_white;
+        bool m_white;
 
         sf::Sprite spritePiece;
 
@@ -59,7 +58,7 @@ class Piece
 
         Piece(const Piece &p);
 
-        virtual Piece *Clone()=0;
+        virtual Piece *clone()=0;
 
         virtual ~Piece();
 
@@ -81,7 +80,7 @@ class Piece
 
         static void initImage()
         {
-            texturePiece.loadFromFile("chess.png");
+            texturePiece.loadFromFile("ressources/chess.png");
         };
 
         virtual char typePiece()=0;
@@ -96,7 +95,7 @@ class Piece
             app.draw(spritePiece);
         }
 
-        virtual std::vector<Case> mouvementsPossible(Echiquier *e)=0;
+        virtual std::vector<Case> mouvementsPossible(Chessboard *e)=0;
 
 };
 

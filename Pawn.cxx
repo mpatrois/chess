@@ -1,8 +1,6 @@
-#include "Pion.h"
-#include "Echiquier.h"
-#include "util.h"
+#include "Pawn.h"
 
-Pion::Pion(int x,int y,bool white):Piece(x,y,white)
+Pawn::Pawn(int x,int y,bool white):Piece(x,y,white)
 {
     if(m_white)
         spritePiece.setTextureRect(sf::IntRect(60, 0, 60, 60));
@@ -12,9 +10,9 @@ Pion::Pion(int x,int y,bool white):Piece(x,y,white)
     nbMove=0;
 };
 
-Pion::~Pion() {};
+Pawn::~Pawn() {};
 
-char Pion::typePiece()
+char Pawn::typePiece()
 {
     if(m_white)
         return 'P';
@@ -22,12 +20,12 @@ char Pion::typePiece()
         return 'p';
 };
 
-Pion *Pion::Clone()
+Pawn *Pawn::clone()
 {
-    return new Pion(*this);
+    return new Pawn(*this);
 };
 
-std::vector<Case> Pion::mouvementsPossible(Echiquier *e)
+std::vector<Case> Pawn::mouvementsPossible(Chessboard *e)
 {
     std::vector<Case> listeCase;
 
@@ -68,11 +66,11 @@ std::vector<Case> Pion::mouvementsPossible(Echiquier *e)
     return listeCase;
 };
 
-int Pion::getNbMove(){
+int Pawn::getNbMove(){
     return nbMove;
 }
 
-void Pion::move( int x, int y ){
+void Pawn::move( int x, int y ){
     nbMove++;
     Piece::move(x,y);
 }

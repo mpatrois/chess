@@ -8,16 +8,17 @@
 #define Chessboard_h
 
 #include "Piece.h"
-#include "Player.h"
+#include "Utils.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
+
 struct Partie;
 struct PartieD;
 
 //#include "Utils.h"
 /**
- * Declaration d'une classe mod�lisant une piece de jeu d'echec.
+ * Declaration d'une classe modélisant une piece de jeu d'echec.
  */
 class Player;
 
@@ -31,7 +32,7 @@ private:
 
     Player *joueurs[2];
 
-    int tour=0;
+    int tour;
 
     sf::Font font;
 
@@ -42,17 +43,11 @@ private:
 
     std::vector<Coup> listeCoups;
 
-
-
-
-
-
-
 public:
 
     /**
-     * Constructeur par d�faut.
-     * Initialise � vide l'chessboard.
+     * Constructeur par défaut.
+     * Initialise à vide l'chessboard.
      */
     Chessboard();
 

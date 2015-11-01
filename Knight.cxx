@@ -1,8 +1,6 @@
-#include "Echiquier.h"
-#include "Cavalier.h"
-#include "util.h"
+#include "Knight.h"
 
-Cavalier::Cavalier(int x, int y, bool white):Piece(x,y,white)
+Knight::Knight(int x, int y, bool white):Piece(x,y,white)
 {
     if(m_white)
         spritePiece.setTextureRect(sf::IntRect(60, 60, 60, 60));
@@ -10,14 +8,14 @@ Cavalier::Cavalier(int x, int y, bool white):Piece(x,y,white)
         spritePiece.setTextureRect(sf::IntRect(0, 60, 60, 60));
 };
 
-Cavalier::~Cavalier() {};
+Knight::~Knight() {};
 
-Cavalier *Cavalier::Clone()
+Knight *Knight::clone()
 {
-    return new Cavalier(*this);
+    return new Knight(*this);
 };
 
-char Cavalier::typePiece()
+char Knight::typePiece()
 {
     if(m_white)
         return 'C';
@@ -25,7 +23,7 @@ char Cavalier::typePiece()
         return 'c';
 };
 
-std::vector<Case> Cavalier::mouvementsPossible(Echiquier *e)
+std::vector<Case> Knight::mouvementsPossible(Chessboard *e)
 {
     std::vector<Case> allMoves;
     std::vector<Case> listeCase;
@@ -44,7 +42,7 @@ std::vector<Case> Cavalier::mouvementsPossible(Echiquier *e)
         int dx=allMoves[i].x;
         int dy=allMoves[i].y;
 
-        if(utility::inPlateau(dx,dy))
+        if(Utility::inPlateau(dx,dy))
         {
             if(e->getPiece(dx,dy)==NULL)
             {

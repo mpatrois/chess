@@ -3,11 +3,10 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include "util.h"
+#include "Utils.h"
 #include "Piece.h"
 
-//static std::vector<std::string> split(std::string toSplit,std::string delimiter);
-namespace utility
+namespace Utility
 {
     std::vector<std::string> split(std::string toSplit,std::string delimiter)
     {
@@ -46,17 +45,17 @@ namespace utility
 
         std::string name;
 
-        std::string piecesJoueurBlanc;
+        std::string piecesWhitePlayer;
 
-        std::string piecesJoueurNoir;
+        std::string piecesBlackPlayer;
 
         int tour;
 
         std::ifstream infile("savedGames.txt");
 
-        while(infile >> name >> tour >> piecesJoueurBlanc >> piecesJoueurNoir)
+        while(infile >> name >> tour >> piecesWhitePlayer >> piecesBlackPlayer)
         {
-            listParties.push_back(Partie(name,tour,piecesJoueurBlanc,piecesJoueurNoir));
+            listParties.push_back(Partie(name,tour,piecesWhitePlayer,piecesBlackPlayer));
         }
 
         infile.close();
@@ -88,4 +87,3 @@ namespace utility
         return (x>-1 && x<8 && y>-1 && y<8);
     }
 }
-

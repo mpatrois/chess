@@ -1,8 +1,8 @@
-#include "Tour.h"
-#include "Roi.h"
-#include "Echiquier.h"
+#include "Rook.h"
+#include "King.h"
+#include "Chessboard.h"
 
-Roi::Roi(int x, int y, bool white):Piece(x,y,white)
+King::King(int x, int y, bool white):Piece(x,y,white)
 {
     if(m_white)
         spritePiece.setTextureRect(sf::IntRect(60, 300, 60, 60));
@@ -13,9 +13,9 @@ Roi::Roi(int x, int y, bool white):Piece(x,y,white)
 
 };
 
-Roi::~Roi() {};
+King::~King() {};
 
-char Roi::typePiece()
+char King::typePiece()
 {
     if(m_white)
         return 'R';
@@ -23,12 +23,12 @@ char Roi::typePiece()
         return 'r';
 };
 
-Roi *Roi::Clone()
+King *King::clone()
 {
-    return new Roi(*this) ;
+    return new King(*this) ;
 };
 
-std::vector<Case> Roi::mouvementsPossible(Echiquier *e)
+std::vector<Case> King::mouvementsPossible(Chessboard *e)
 {
     std::vector<Case> listeCase;
     for (int vx=-1; vx<2; vx++)
@@ -62,9 +62,9 @@ std::vector<Case> Roi::mouvementsPossible(Echiquier *e)
 
 //        if(!hadMove())
 //        {
-//            Joueur *adverse=e->getAdverse(isWhite());
+//            Player *adverse=e->getAdverse(isWhite());
 ////            std::cout << adverse->isWhite();
-//            Tour *tGauche=dynamic_cast<Tour*>(e->getPiece(0,y()));
+//            Rook *tGauche=dynamic_cast<Rook*>(e->getPiece(0,y()));
 //
 //            if(tGauche!=nullptr && !tGauche->hadMove())
 //            {
@@ -80,9 +80,9 @@ std::vector<Case> Roi::mouvementsPossible(Echiquier *e)
 //                }
 //            }
 //
-//            Tour *tDroite=dynamic_cast<Tour*>(e->getPiece(7,y()));
+//            Rook *tDkingte=dynamic_cast<Rook*>(e->getPiece(7,y()));
 //
-//            if(tDroite!=nullptr && !tDroite->hadMove())
+//            if(tDkingte!=nullptr && !tDkingte->hadMove())
 //            {
 //                if(e->getPiece(4,y())==NULL && e->getPiece(5,y())==NULL && e->getPiece(6,y())==NULL){
 //
@@ -102,11 +102,11 @@ std::vector<Case> Roi::mouvementsPossible(Echiquier *e)
     return listeCase;
 }
 
-bool Roi::hadMove(){
+bool King::hadMove(){
     return moved;
 }
 
-void Roi::move( int x, int y )
+void King::move( int x, int y )
 {
     moved=true;
     Piece::move(x,y);

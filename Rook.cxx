@@ -1,7 +1,7 @@
-#include "Tour.h"
-#include "Echiquier.h"
+#include "Rook.h"
+#include "Chessboard.h"
 
-Tour::Tour(int x, int y, bool white):Piece(x,y,white)
+Rook::Rook(int x, int y, bool white):Piece(x,y,white)
 {
     if(m_white)
         spritePiece.setTextureRect(sf::IntRect(60, 180, 60, 60));
@@ -11,9 +11,9 @@ Tour::Tour(int x, int y, bool white):Piece(x,y,white)
     moved=false;
 };
 
-Tour::~Tour() {};
+Rook::~Rook() {};
 
-char Tour::typePiece()
+char Rook::typePiece()
 {
     if(m_white)
         return 'T';
@@ -21,12 +21,12 @@ char Tour::typePiece()
         return 't';
 };
 
-Tour *Tour::Clone()
+Rook *Rook::clone()
 {
-    return new Tour(*this);
+    return new Rook(*this);
 };
 
-std::vector<Case> Tour::mouvementsPossible(Echiquier *e)
+std::vector<Case> Rook::mouvementsPossible(Chessboard *e)
 {
     std::vector<Case> listeCase;
     for (int vx=-1; vx<2; vx++)
@@ -60,11 +60,11 @@ std::vector<Case> Tour::mouvementsPossible(Echiquier *e)
     return listeCase;
 }
 
-bool Tour::hadMove(){
+bool Rook::hadMove(){
     return moved;
 }
 
-void Tour::move( int x, int y )
+void Rook::move( int x, int y )
 {
     moved=true;
     Piece::move(x,y);

@@ -1,58 +1,58 @@
 /**
- * Mise en oeuvre de Echiquier.h
+ * Mise en oeuvre de Chessboard.h
  *
- * @file Echiquier.cxx
+ * @file Chessboard.cxx
  */
 
-#include "Echiquier.h"
-#include "Joueur.h"
-#include "JoueurBlanc.h"
-#include "JoueurNoir.h"
+#include "Chessboard.h"
+#include "Player.h"
+#include "WhitePlayer.h"
+#include "BlackPlayer.h"
 
 
 using namespace std;
 
 /**
- * Constructeur par défaut.
- * Initialise à vide l'echiquier.
+ * Constructeur par dï¿½faut.
+ * Initialise ï¿½ vide l'chessboard.
  */
-Echiquier::Echiquier()
+Chessboard::Chessboard() : tour(0)
 {
     for(unsigned int i=0; i<64; i++)
     {
         m_cases[i]=NULL;
     }
 
-    Joueur *jB=new JoueurBlanc();
-    Joueur *jN=new JoueurNoir();
+    Player *jB=new WhitePlayer();
+    Player *jN=new BlackPlayer();
 
-    setJoueur(jB,jN);
+    setPlayer(jB,jN);
 
-    font.loadFromFile("dreamwalker.ttf");
+    font.loadFromFile("ressources/dreamwalker.ttf");
 
-    spriteJoueurEnCours=sf::Sprite(Piece::texturePiece);
+    spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
 
-    texturePlateau.loadFromFile("board.png");
+    texturePlateau.loadFromFile("ressources/board.png");
 
     spritePlateau=sf::Sprite(texturePlateau);
 
 
 }
-Echiquier::Echiquier(Joueur *j1,Joueur *j2)
+Chessboard::Chessboard(Player *j1,Player *j2) : tour(0)
 {
     for(unsigned int i=0; i<64; i++)
     {
         m_cases[i]=NULL;
     }
 
-    setJoueur(j1,j2);
+    setPlayer(j1,j2);
 
-    font.loadFromFile("dreamwalker.ttf");
+    font.loadFromFile("ressources/dreamwalker.ttf");
 
-    spriteJoueurEnCours=sf::Sprite(Piece::texturePiece);
+    spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
 
 }
-Echiquier::Echiquier(Partie p)
+Chessboard::Chessboard(Partie p)
 {
     for(unsigned int i=0; i<64; i++)
     {
@@ -60,32 +60,32 @@ Echiquier::Echiquier(Partie p)
     }
     tour=p.tour;
 
-    Joueur *j1=new JoueurBlanc(utility::split(p.j1,","));
-    Joueur *j2=new JoueurNoir(utility::split(p.j2,","));
+    Player *j1=new WhitePlayer(Utility::split(p.j1,","));
+    Player *j2=new BlackPlayer(Utility::split(p.j2,","));
 
-    setJoueur(j1,j2);
+    setPlayer(j1,j2);
 
-    font.loadFromFile("dreamwalker.ttf");
+    font.loadFromFile("ressources/dreamwalker.ttf");
 
-    spriteJoueurEnCours=sf::Sprite(Piece::texturePiece);
+    spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
 
-    texturePlateau.loadFromFile("board.png");
+    texturePlateau.loadFromFile("ressources/board.png");
 
     spritePlateau=sf::Sprite(texturePlateau);
 }
 
-Echiquier::Echiquier(PartieD p)
+Chessboard::Chessboard(PartieD p)
 {
     for(unsigned int i=0; i<64; i++)
     {
         m_cases[i]=NULL;
     }
     tour=0;
-    Joueur *jB=new JoueurBlanc();
-    Joueur *jN=new JoueurNoir();
-    setJoueur(jB,jN);
+    Player *jB=new WhitePlayer();
+    Player *jN=new BlackPlayer();
+    setPlayer(jB,jN);
 
-    std::vector<std::string> listeCoupsString=utility::split(p.coups,"|");
+    std::vector<std::string> listeCoupsString=Utility::split(p.coups,"|");
 
     std::vector<Coup> listeCoupsCharge;
 
@@ -121,13 +121,13 @@ Echiquier::Echiquier(PartieD p)
 
     font.loadFromFile("dreamwalker.ttf");
 
-    spriteJoueurEnCours=sf::Sprite(Piece::texturePiece);
+    spritePlayerEnCours=sf::Sprite(Piece::texturePiece);
 
     texturePlateau.loadFromFile("board.png");
 
     spritePlateau=sf::Sprite(texturePlateau);
 }
-Echiquier::~Echiquier()
+Chessboard::~Chessboard()
 {
     delete joueurs[0];
 
@@ -143,9 +143,9 @@ Echiquier::~Echiquier()
  * @return 0 si aucune piece n'est sur cette case et un pointeur
  * vers une piece sinon.
  */
-Piece* Echiquier::getPiece( int x, int y )
+Piece* Chessboard::getPiece( int x, int y )
 {
-    if(utility::inPlateau(x,y))
+    if(Utility::inPlateau(x,y))
         return m_cases[y*8+x];
     else
         return NULL;
@@ -155,18 +155,18 @@ Piece* Echiquier::getPiece( int x, int y )
 
 
 /**
- * Place une piece sur l'echiquier, aux coordonnees specifiees dans la piece.
+ * Place une piece sur l'chessboard, aux coordonnees specifiees dans la piece.
  *
  * @param p un pointeur vers une piece
  *
  * @return 'true' si le placement s'est bien passe, 'false' sinon
  * (case occupee, coordonnees invalides, piece vide )
  */
-bool Echiquier::placer( Piece* p )
+bool Chessboard::placer( Piece* p )
 {
     if(p!=NULL)
     {
-        if(utility::inPlateau(p->x(),p->y()))
+        if(Utility::inPlateau(p->x(),p->y()))
         {
             int pos=p->y()*8+p->x();
 
@@ -193,7 +193,7 @@ bool Echiquier::placer( Piece* p )
 
 
 /**
- * Deplace une piece sur l'echiquier, des coordonnees specifiees
+ * Deplace une piece sur l'chessboard, des coordonnees specifiees
  * dans la piece aux coordonnees x,y.
  *
  * @param p un pointeur vers une piece
@@ -202,9 +202,9 @@ bool Echiquier::placer( Piece* p )
  *
  * @return 'true' si le placement s'est bien passe, 'false' sinon
  * (case occupee, coordonnees invalides, piece vide, piece pas
- * presente au bon endroit sur l'echiquier)
+ * presente au bon endkingt sur l'chessboard)
  */
-bool Echiquier::deplacer( Piece* p, int x, int y )
+bool Chessboard::deplacer( Piece* p, int x, int y )
 {
     return false;
 }
@@ -219,19 +219,19 @@ bool Echiquier::deplacer( Piece* p, int x, int y )
  * @return 0 si aucune piece n'est sur cette case et le pointeur
  * vers la piece enlevee sinon.
  */
-void Echiquier::enleverPiece( int x, int y )
+void Chessboard::enleverPiece( int x, int y )
 {
-    if(utility::inPlateau(x,y))
+    if(Utility::inPlateau(x,y))
         m_cases[y*8+x]=NULL;
 }
 
 
 /**
- * Affiche l'echiquier avec des # pour les cases noires et . pour
+ * Affiche l'chessboard avec des # pour les cases noires et . pour
  * les blanches si elles sont vides, et avec B pour les pieces
  * blanches et N pour les pieces noires.
  */
-void Echiquier::affiche()
+void Chessboard::affiche()
 {
     cout << endl << "  01234567" << endl;
     for ( int y = 0; y < 8; ++y )
@@ -253,12 +253,12 @@ void Echiquier::affiche()
 }
 
 void
-Echiquier::afficheGraphique(sf::RenderWindow &app)
+Chessboard::afficheGraphique(sf::RenderWindow &app)
 {
     sf::Text text;
 
     text.setFont(font);
-    text.setString("Joueur en cours");
+    text.setString("Player en cours");
     text.setCharacterSize(24);
     text.setColor(sf::Color::Black);
     text.setStyle(sf::Text::Underlined);
@@ -267,19 +267,19 @@ Echiquier::afficheGraphique(sf::RenderWindow &app)
     app.draw(text);
 
     if(joueurs[tour]->isWhite())
-        spriteJoueurEnCours.setTextureRect(sf::IntRect(60, 60, 60, 60));
+        spritePlayerEnCours.setTextureRect(sf::IntRect(60, 60, 60, 60));
     else
-        spriteJoueurEnCours.setTextureRect(sf::IntRect(0, 60, 60, 60));
+        spritePlayerEnCours.setTextureRect(sf::IntRect(0, 60, 60, 60));
 
-    spriteJoueurEnCours.setPosition(500,160);
+    spritePlayerEnCours.setPosition(500,160);
 
     app.draw(spritePlateau);
-    app.draw(spriteJoueurEnCours);
+    app.draw(spritePlayerEnCours);
 
     joueurs[0]->affichePieceJGraphique(app,this);
     joueurs[1]->affichePieceJGraphique(app,this);
 }
-bool Echiquier::click(int mx,int my)
+bool Chessboard::click(int mx,int my)
 {
 //    cout << tour << "inCli" <<endl;
     int caseX=mx/60;
@@ -298,18 +298,18 @@ bool Echiquier::click(int mx,int my)
     }
     return echecEtMath;
 }
-void Echiquier::setJoueur(Joueur *jB,Joueur *jN)
+void Chessboard::setPlayer(Player *jB,Player *jN)
 {
     joueurs[0]=jB;
     joueurs[1]=jN;
 
-    jB->setJoueurAdverse(jN);
-    jN->setJoueurAdverse(jB);
+    jB->setPlayerAdverse(jN);
+    jN->setPlayerAdverse(jB);
 
     jB->placer(this);
     jN->placer(this);
 }
-//void Echiquier::savePartie(std::string nameFile)
+//void Chessboard::savePartie(std::string nameFile)
 //{
 //    ofstream myfile;
 //
@@ -317,13 +317,13 @@ void Echiquier::setJoueur(Joueur *jB,Joueur *jN)
 //    myfile << nameFile << endl;
 //    myfile << tour << endl;
 //
-//    joueurs[0]->saveJoueur(myfile);
-//    joueurs[1]->saveJoueur(myfile);
+//    joueurs[0]->savePlayer(myfile);
+//    joueurs[1]->savePlayer(myfile);
 //
 //    myfile.close();
 //};
 
-void Echiquier::savePartie(std::string nameFile)
+void Chessboard::savePartie(std::string nameFile)
 {
     ofstream myfile;
 
@@ -342,23 +342,23 @@ void Echiquier::savePartie(std::string nameFile)
     myfile.close();
 };
 
-Joueur *Echiquier::getAdverse(bool coulJoueur){
-    if(coulJoueur == joueurs[tour]->isWhite())
+Player *Chessboard::getAdverse(bool coulPlayer){
+    if(coulPlayer == joueurs[tour]->isWhite())
         return joueurs[tour];
     else
         return joueurs[(tour+1)%2];
 }
 
-void Echiquier::addCoup(Case cd,Case ca){
+void Chessboard::addCoup(Case cd,Case ca){
     listeCoups.push_back(Coup(cd,ca));
 }
 
-//void Echiquier::openPartie()
+//void Chessboard::openPartie()
 //{
 //    ifstream infile("example.txt");
-//    string piecesJoueurBlanc;
-//    string piecesJoueurNoir;
-//    if(infile >> tour >> piecesJoueurBlanc >> piecesJoueurNoir)
+//    string piecesWhitePlayer;
+//    string piecesBlackPlayer;
+//    if(infile >> tour >> piecesWhitePlayer >> piecesBlackPlayer)
 //    {
 //
 //    }
@@ -374,9 +374,9 @@ void Echiquier::addCoup(Case cd,Case ca){
 //    if(joueurs[1]!=NULL)
 //        delete joueurs[1];
 //
-//    joueurs[0]=new JoueurBlanc(utility::split(piecesJoueurBlanc,","));
-//    joueurs[1]=new JoueurNoir(utility::split(piecesJoueurNoir,","));
+//    joueurs[0]=new WhitePlayer(Utility::split(piecesWhitePlayer,","));
+//    joueurs[1]=new BlackPlayer(Utility::split(piecesBlackPlayer,","));
 //
-//    setJoueur(joueurs[0],joueurs[1]);
+//    setPlayer(joueurs[0],joueurs[1]);
 //
 //};

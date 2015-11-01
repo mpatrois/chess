@@ -2,22 +2,23 @@
 #define PION_H
 
 #include "Piece.h"
+#include "Chessboard.h"
 
-class Pion : public Piece
+class Pawn : public Piece
 {
     int nbMove;
 
 	public:
 
-    Pion(int x,int y,bool white);
+    Pawn(int x,int y,bool white);
 
-    virtual ~Pion();
+    virtual ~Pawn();
 
     virtual char typePiece();
 
-    Pion *Clone();
+    Pawn *clone();
 
-    std::vector<Case> mouvementsPossible(Echiquier *e);
+    std::vector<Case> mouvementsPossible(Chessboard *e);
 
     int getNbMove();
 

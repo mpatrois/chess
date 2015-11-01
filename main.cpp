@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "Echiquier.h"
-#include "util.h"
+#include "Chessboard.h"
 
 using namespace std;
 
@@ -85,7 +84,6 @@ public:
         while (this->isOpen() && !quit)
             while (this->pollEvent(event))
             {
-                // Close window : exit
                 if (event.type == sf::Event::Closed)
                 {
                     quit=true;
@@ -140,6 +138,7 @@ public:
     Action () {};
     virtual void operator()() const=0;
 };
+
 class ActionClose : public Action
 {
 public:
@@ -154,10 +153,11 @@ public:
 private:
     bool *backMenu;
 };
+
 class ActionSave : public Action
 {
 public:
-    ActionSave (Echiquier **ech):Action()
+    ActionSave (Chessboard **ech):Action()
     {
         e=ech;
     };
@@ -169,7 +169,7 @@ public:
             (*e)->savePartie(nameGame);
     };
 private:
-    Echiquier **e;
+    Chessboard **e;
 };
 
 
@@ -196,9 +196,8 @@ public:
         return spriteButton.getGlobalBounds().contains(x,y);
     }
     Action *actionPerformed;
-
-    std::function<void(void)> *action;
 };
+
 int Menu(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
 {
     bool choose=false;
@@ -221,8 +220,6 @@ int Menu(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
 
             if (event.type==sf::Event::KeyPressed)
             {
-
-//                        std::cout << "ta mere" << std::endl;
                 if(sf::Keyboard::Up==event.key.code)
                 {
                     if(choice>0)
@@ -268,7 +265,7 @@ PartieD ChargerPartie(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
 
     unsigned int choice=0;
 
-    vector<PartieD> listParties=utility::listePartie();
+    vector<PartieD> listParties=Utility::listePartie();
 
     listParties.push_back(PartieD("Annuler",""));
 
@@ -281,7 +278,6 @@ PartieD ChargerPartie(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
 
             if (event.type==sf::Event::KeyPressed)
             {
-                //                        std::cout << "ta mere" << std::endl;
                 if(sf::Keyboard::Up==event.key.code)
                 {
                     if(choice>0)
@@ -328,21 +324,21 @@ int main()
 
     sf::RenderWindow app(sf::VideoMode(840, 480), "SFML window");
 
-    texture.loadFromFile("fischer.png");
+    texture.loadFromFile("ressources/fischer.png");
 
     sf::Sprite sprite(texture);
 
-    font.loadFromFile("dreamwalker.ttf");
+    font.loadFromFile("ressources/dreamwalker.ttf");
 
     bool quitGame=false;
     bool backMenu=false;
 
-    Echiquier *e;
+    Chessboard *e;
 
-    Button bBackGame("retour.png",550,10);
+    Button bBackGame("ressources/retour.png",550,10);
     bBackGame.actionPerformed=new ActionClose(&backMenu);
 
-    Button bSave("save.png",500,10);
+    Button bSave("ressources/save.png",500,10);
     bSave.actionPerformed=new ActionSave(&e);
 
     vector<Button> listButton;
@@ -356,7 +352,7 @@ int main()
         {
             case 0:
             {
-                e=new Echiquier();
+                e=new Chessboard();
             }
             break;
 
@@ -366,7 +362,7 @@ int main()
                 if(partieCharge.name=="Annuler")
                     backMenu=true;
                 else
-                    e=new Echiquier(partieCharge);
+                    e=new Chessboard(partieCharge);
             };break;
 
             case 2:

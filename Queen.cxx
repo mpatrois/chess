@@ -1,7 +1,7 @@
-#include "Reine.h"
-#include "Echiquier.h"
+#include "Queen.h"
+#include "Chessboard.h"
 
-Reine::Reine(int x, int y, bool white):Piece(x,y,white)
+Queen::Queen(int x, int y, bool white):Piece(x,y,white)
 {
     if(m_white)
         spritePiece.setTextureRect(sf::IntRect(60, 240, 60, 60));
@@ -9,9 +9,9 @@ Reine::Reine(int x, int y, bool white):Piece(x,y,white)
         spritePiece.setTextureRect(sf::IntRect(0, 240, 60, 60));
 };
 
-Reine::~Reine() {};
+Queen::~Queen() {};
 
-char Reine::typePiece()
+char Queen::typePiece()
 {
     if(m_white)
         return 'Q';
@@ -19,12 +19,12 @@ char Reine::typePiece()
         return 'q';
 };
 
-Reine *Reine::Clone()
+Queen *Queen::clone()
 {
-    return new Reine(*this) ;
+    return new Queen(*this) ;
 };
 
-std::vector<Case> Reine::mouvementsPossible(Echiquier *e)
+std::vector<Case> Queen::mouvementsPossible(Chessboard *e)
 {
     std::vector<Case> listeCase;
 
