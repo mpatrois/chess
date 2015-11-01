@@ -9,10 +9,6 @@ class King : public Piece
     private:
         bool moved;
 
-        Piece *tourDkingte;
-
-        Piece *tourGauche;
-
     public:
 
         King(int x, int y, bool white);

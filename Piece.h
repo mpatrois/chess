@@ -66,8 +66,6 @@ class Piece
 
         virtual ~Piece();
 
-        void init( int x, int y, bool white );
-
         virtual void move( int x, int y ,Chessboard *e);
 
         int x();
@@ -88,11 +86,6 @@ class Piece
         };
 
         virtual char typePiece() = 0;
-
-        sf::Sprite getSprite()
-        {
-            return spritePiece;
-        };
 
         void graphicDisplay(sf::RenderWindow &app)
         {

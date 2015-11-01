@@ -37,8 +37,6 @@ class Player
 
         Player(const Player &j);
 
-        Player(std::vector<std::string> listPieces);
-
         virtual ~Player();
 
         std::vector<Piece *> getPieces();

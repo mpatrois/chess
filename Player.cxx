@@ -1,9 +1,4 @@
 #include "Player.h"
-#include "Piece.h"
-#include "Rook.h"
-#include "Chessboard.h"
-#include "Pawn.h"
-#include <vector>
 
 Player::Player()
 {
@@ -23,14 +18,11 @@ Player::Player(const Player &j)
         playerPieces.push_back(p);
 
         if(j.kingPlayer==j.playerPieces[i])
-        {
             kingPlayer=dynamic_cast<King *>(p);
-        }
+
         if(j.selectedPiece!=NULL)
-        {
             if(j.selectedPiece==j.playerPieces[i])
                 selectedPiece=p;
-        }
     }
 }
 
@@ -48,9 +40,7 @@ std::vector<Piece *> Player::getPieces()
 void Player::affichePieceJTerminal()
 {
     for (unsigned int x=0; x<playerPieces.size(); x++)
-    {
         playerPieces[x]->display();
-    }
 }
 
 void Player::displayPlayerPiece(sf::RenderWindow &app,Chessboard *e)
@@ -75,7 +65,6 @@ void Player::displayPlayerPiece(sf::RenderWindow &app,Chessboard *e)
 
         app.draw(rectangle);
 
-//       std::vector<Square> listCase=selectedPiece->availableMovements(e);
         std::vector<Square> listCase=listeMouvementPossible(e);
 
         for (unsigned int j=0; j<listCase.size(); j++)

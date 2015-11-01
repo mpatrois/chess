@@ -14,7 +14,7 @@
 #include <fstream>
 
 struct Partie;
-struct PartieD;
+struct Partie;
 
 //#include "Utils.h"
 /**
@@ -53,8 +53,6 @@ public:
 
     Chessboard(Partie p);
 
-    Chessboard(PartieD p);
-
     Chessboard(Player *j1,Player *j2);
 
     ~Chessboard();
@@ -79,20 +77,6 @@ public:
      * (square occupee, coordonnees invalides, piece vide )
      */
     bool put( Piece* p );
-
-    /**
-     * Deplace une piece sur l'chessboard, des coordonnees specifiees
-     * dans la piece aux coordonnees x,y.
-     *
-     * @param p un pointeur vers une piece
-     * @param x un entier entre 1 et 8
-     * @param y un entier entre 1 et 8
-     *
-     * @return 'true' si le placement s'est bien passe, 'false' sinon
-     * (square occupee, coordonnees invalides, piece vide, piece pas
-     * presente au bon endkingt sur l'chessboard)
-     */
-    bool deplacer( Piece* p, int x, int y );
 
     /**
      * Enleve la piece situee sur une square (qui devient vide).

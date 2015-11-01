@@ -6,14 +6,12 @@
 
 // A besoin de la declaration de la classe
 #include "Player.h"
-#include "Piece.h"
-#include "Chessboard.h"
-#include <iostream>
+
 sf::Texture Piece::texturePiece=sf::Texture();
 
 Piece::Piece()
-{
-}
+{}
+
 Piece::Piece(int x,int y,bool white)
 {
     m_x=x;

@@ -54,51 +54,10 @@ std::vector<Square> King::availableMovements(Chessboard *e)
                             listeCase.push_back(c);
                         }
                     }
-                    dx+=vx;
-                    dy+=vy;
                 }
             }
         }
 
-//        if(!hadMove())
-//        {
-//            Player *opponent=e->getAdverse(isWhite());
-////            std::cout << opponent->isWhite();
-//            Rook *tGauche=dynamic_cast<Rook*>(e->getPiece(0,y()));
-//
-//            if(tGauche!=nullptr && !tGauche->hadMove())
-//            {
-//                if(e->getPiece(1,y())==NULL && e->getPiece(2,y())==NULL){
-////
-//                        if(!opponent->viseCase(0,y(),e) &&
-//                           !opponent->viseCase(2,y(),e) &&
-//                           !opponent->viseCase(3,y(),e) &&
-//                           !opponent->viseCase(4,y(),e))
-//                        {
-////                            listeCase.push_back(Square(1,y()));
-//                        }
-//                }
-//            }
-//
-//            Rook *tDkingte=dynamic_cast<Rook*>(e->getPiece(7,y()));
-//
-//            if(tDkingte!=nullptr && !tDkingte->hadMove())
-//            {
-//                if(e->getPiece(4,y())==NULL && e->getPiece(5,y())==NULL && e->getPiece(6,y())==NULL){
-//
-//
-//                        if(!opponent->viseCase(7,y(),e) &&
-//                           !opponent->viseCase(5,y(),e) &&
-//                           !opponent->viseCase(4,y(),e) &&
-//                           !opponent->viseCase(3,y(),e))
-//                        {
-//                            listeCase.push_back(Square(5,y()));
-//                        }
-//                    }
-//
-//            }
-//        }
-//    return listeCase;
     return listeCase;
 }
 

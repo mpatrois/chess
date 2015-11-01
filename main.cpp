@@ -38,6 +38,7 @@ public:
         this->draw(messageText);
         this->draw(pressAkey);
         this->display();
+
         while (this->isOpen() && !quit)
             while (this->pollEvent(event))
             {
@@ -260,15 +261,15 @@ int Menu(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
     return choice;
 }
 
-PartieD ChargerPartie(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
+Partie chargerPartie(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
 {
     bool choose=false;
 
     unsigned int choice=0;
 
-    vector<PartieD> listParties=Utility::listePartie();
+    vector<Partie> listParties=Utility::listePartie();
 
-    listParties.push_back(PartieD("Annuler",""));
+    listParties.push_back(Partie("Annuler",""));
 
     sf::Event event;
 
@@ -293,7 +294,7 @@ PartieD ChargerPartie(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
                         choice++;
                     }
                 }
-                else if(sf::Keyboard::BackSlash)
+                else if(sf::Keyboard::BackSlash==event.key.code)
                     choose=true;
             }
         }
@@ -337,10 +338,10 @@ int main()
     Chessboard *e;
 
     Button bBackGame("ressources/retour.png",550,10);
-    bBackGame.actionPerformed=new ActionClose(&backMenu);
+    bBackGame.actionPerformed = new ActionClose(&backMenu);
 
     Button bSave("ressources/save.png",500,10);
-    bSave.actionPerformed=new ActionSave(&e);
+    bSave.actionPerformed = new ActionSave(&e);
 
     vector<Button> listButton;
 
@@ -357,7 +358,7 @@ int main()
 
             case 1:
             {
-                PartieD partieCharge = ChargerPartie(app,sprite,font);
+                Partie partieCharge = chargerPartie(app,sprite,font);
                 if(partieCharge.name=="Annuler")
                     backMenu=true;
                 else

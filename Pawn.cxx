@@ -42,8 +42,8 @@ std::vector<Square> Pawn::availableMovements(Chessboard *e)
 
         if(((y()==6 && sens==-1) || (y()==1 && sens==1)) && e->getPiece(x(),y()+2*sens)==NULL )
         {
-            Square c(x(),y()+2*sens);
-            listeCase.push_back(c);
+            Square s(x(),y()+2*sens);
+            listeCase.push_back(s);
         }
     }
 

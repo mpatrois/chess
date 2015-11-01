@@ -39,33 +39,9 @@ namespace Utility
         return returnValue;
     }
 
-    std::vector<Partie> listeParties()
+    std::vector<Partie> listePartie()
     {
         std::vector<Partie> listParties;
-
-        std::string name;
-
-        std::string piecesWhitePlayer;
-
-        std::string piecesBlackPlayer;
-
-        int tour;
-
-        std::ifstream infile("savedGames.txt");
-
-        while(infile >> name >> tour >> piecesWhitePlayer >> piecesBlackPlayer)
-        {
-            listParties.push_back(Partie(name,tour,piecesWhitePlayer,piecesBlackPlayer));
-        }
-
-        infile.close();
-
-        return listParties;
-    }
-
-    std::vector<PartieD> listePartie()
-    {
-        std::vector<PartieD> listParties;
 
         std::string name;
         std::string blows;
@@ -74,7 +50,7 @@ namespace Utility
 
         while(infile >> name >> blows)
         {
-            listParties.push_back(PartieD(name,blows));
+            listParties.push_back(Partie(name,blows));
         }
 
         infile.close();

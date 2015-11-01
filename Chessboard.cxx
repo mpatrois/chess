@@ -54,7 +54,7 @@ Chessboard::Chessboard(Player *j1,Player *j2) : tour(0)
 
 }
 
-Chessboard::Chessboard(PartieD p) : tour(0)
+Chessboard::Chessboard(Partie p) : tour(0)
 {
     for(unsigned int i=0; i<64; i++)
     {
@@ -149,24 +149,6 @@ bool Chessboard::put( Piece* p )
         }
     }
 
-    return false;
-}
-
-
-/**
- * Deplace une piece sur l'chessboard, des coordonnees specifiees
- * dans la piece aux coordonnees x,y.
- *
- * @param p un pointeur vers une piece
- * @param x un entier entre 1 et 8
- * @param y un entier entre 1 et 8
- *
- * @return 'true' si le placement s'est bien passe, 'false' sinon
- * (square occupee, coordonnees invalides, piece vide, piece pas
- * presente au bon endkingt sur l'chessboard)
- */
-bool Chessboard::deplacer( Piece* p, int x, int y )
-{
     return false;
 }
 
