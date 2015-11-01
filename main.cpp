@@ -294,7 +294,7 @@ Partie chargerPartie(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
                         choice++;
                     }
                 }
-                else if(sf::Keyboard::BackSlash==event.key.code)
+                else if(sf::Keyboard::Return==event.key.code)
                     choose=true;
             }
         }

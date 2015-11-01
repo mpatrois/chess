@@ -90,14 +90,15 @@ Chessboard::Chessboard(Partie p) : tour(0)
         tour=(tour+1)%2;
     }
 
-    font.loadFromFile("dreamwalker.ttf");
+    font.loadFromFile("ressources/dreamwalker.ttf");
 
     spriteCurrentPlayer = sf::Sprite(Piece::texturePiece);
 
-    texturePlateau.loadFromFile("board.png");
+    texturePlateau.loadFromFile("ressources/board.png");
 
     spritePlateau = sf::Sprite(texturePlateau);
 }
+
 Chessboard::~Chessboard()
 {
     delete players[0];
