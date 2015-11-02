@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Chessboard.h"
+#include "ChessboardView.h"
+#include "Actions.h"
 
 using namespace std;
 
@@ -174,7 +176,22 @@ private:
     Chessboard **e;
 };
 
+class ActionUndo : public Action
+{
+    public:
 
+    ActionUndo(Chessboard **ech):Action()
+    {
+        e=ech;
+    };
+    virtual void operator()() const
+    {
+        (*e)->undo();
+    };
+private:
+    Chessboard **e;
+//    ChessboardView *ev;
+};
 
 class Button
 {
@@ -200,130 +217,8 @@ public:
     Action *actionPerformed;
 };
 
-int Menu(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
-{
-    bool choose=false;
-    int choice=0;
-
-
-    sf::Text texts[3];
-
-    texts[0]=sf::Text("Jouer",font,40);
-    texts[1]=sf::Text("Charger",font,40);
-    texts[2]=sf::Text("Quitter",font,40);
-
-
-    sf::Event event;
-
-    while(!choose)
-    {
-        while (app.pollEvent(event))
-        {
-
-            if (event.type==sf::Event::KeyPressed)
-            {
-                if(sf::Keyboard::Up==event.key.code)
-                {
-                    if(choice>0)
-                    {
-                        choice--;
-                    }
-                }
-                else if(sf::Keyboard::Down==event.key.code)
-                {
-                    if(choice<2)
-                    {
-                        choice++;
-                    }
-                }
-                else if(sf::Keyboard::Return==event.key.code)
-                    choose=true;
-
-            }
-
-        }
-        app.clear(sf::Color(238,238,238));
-        app.draw(sprite);
-        for(int i=0; i<3; i++)
-        {
-            texts[i].setColor(sf::Color::White);
-            if(i==choice)
-                texts[i].setStyle(sf::Text::Underlined);
-            else
-                texts[i].setStyle(sf::Text::Regular);
-
-            texts[i].setPosition(360,100+i*60);
-            app.draw(texts[i]);
-
-        }
-        app.display();
-    }
-    return choice;
-}
-
-Partie chargerPartie(sf::RenderWindow &app,sf::Sprite sprite,sf::Font font)
-{
-    bool choose=false;
-
-    unsigned int choice=0;
-
-    vector<Partie> listParties=Utility::listePartie();
-
-    listParties.push_back(Partie("Annuler",""));
-
-    sf::Event event;
-
-    while(!choose)
-    {
-        while (app.pollEvent(event))
-        {
-
-            if (event.type==sf::Event::KeyPressed)
-            {
-                if(sf::Keyboard::Up==event.key.code)
-                {
-                    if(choice>0)
-                    {
-                        choice--;
-                    }
-                }
-                else if(sf::Keyboard::Down==event.key.code)
-                {
-                    if(choice<listParties.size()-1)
-                    {
-                        choice++;
-                    }
-                }
-                else if(sf::Keyboard::BackSlash==event.key.code)
-                    choose=true;
-            }
-        }
-
-        app.clear(sf::Color(238,238,238));
-        app.draw(sprite);
-
-        for(unsigned int i=0; i<listParties.size(); i++)
-        {
-            sf::Text text(listParties[i].name,font,40);
-
-            text.setColor(sf::Color::White);
-
-            if(i==choice)
-                text.setStyle(sf::Text::Underlined);
-
-            text.setPosition(360,100+i*60);
-
-            app.draw(text);
-        }
-        app.display();
-    }
-    return listParties[choice];
-}
-
 int main()
 {
-    Piece::initImage();
-
     sf::RenderWindow app(sf::VideoMode(840, 480), "SFML window");
 
     texture.loadFromFile("ressources/fischer.png");
@@ -336,33 +231,41 @@ int main()
     bool backMenu=false;
 
     Chessboard *e;
+    ChessboardView ev=ChessboardView(e);
 
-    Button bBackGame("ressources/retour.png",550,10);
+    Button bBackGame("ressources/quit.png",550,10);
     bBackGame.actionPerformed = new ActionClose(&backMenu);
 
     Button bSave("ressources/save.png",500,10);
     bSave.actionPerformed = new ActionSave(&e);
 
+    Button bUndo("ressources/retour.png",500,300);
+    bUndo.actionPerformed = new ActionUndo(&e);
+
     vector<Button> listButton;
 
     listButton.push_back(bBackGame);
     listButton.push_back(bSave);
+    listButton.push_back(bUndo);
 
     while (!quitGame)
     {
-        switch (Menu(app,sprite,font))
+        e=new Chessboard();
+
+        switch (ev.menu(app,sprite,font))
         {
-            case 0:
-                e=new Chessboard();
-            break;
+            case 0:break;
 
             case 1:
             {
-                Partie partieCharge = chargerPartie(app,sprite,font);
-                if(partieCharge.name=="Annuler")
+                Partie partieCharge = ev.chargerPartie(app,sprite,font);
+                if(partieCharge.name=="Annuler" && partieCharge.blows=="Annuler")
                     backMenu=true;
                 else
-                    e=new Chessboard(partieCharge);
+                {
+                    e->loadPartie(partieCharge);
+                }
+
                 break;
             }
 
@@ -370,21 +273,18 @@ int main()
                 quitGame=true;
             break;
 
-            default:
-            break;
-
         }
 
         if(!quitGame && !backMenu)
         {
+            ev.setModel(e);
             app.clear(sf::Color(238,238,238));
-            e->graphicDisplay(app);
+            ev.graphicDisplay(app);
 
             for(unsigned int i=0; i<listButton.size(); i++)
             {
                 listButton[i].drawButton(app);
             }
-
 
             app.display();
             while (app.isOpen() && !backMenu)
@@ -410,8 +310,6 @@ int main()
                         }
 
                         app.clear(sf::Color(238,238,238));
-                        e->graphicDisplay(app);
-
                         for(unsigned int i=0; i<listButton.size(); i++)
                         {
                             listButton[i].drawButton(app);
@@ -421,6 +319,9 @@ int main()
                                 (*listButton[i].actionPerformed)();
                             }
                         }
+
+
+                        ev.graphicDisplay(app);
                         app.display();
                     }
                 }

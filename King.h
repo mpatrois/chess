@@ -25,7 +25,6 @@ class King : public Piece
 
         void move( int x, int y,Chessboard *e);
 
-//        void setRook(Piece* trDrte,Piece* trGche);
 };
 
 #endif // ROI_H

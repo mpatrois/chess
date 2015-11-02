@@ -96,6 +96,13 @@ class Player
 
         void selectPiece(int x,int y,Chessboard *e);
 
+        void unselectPiece();
+
+        King *getKing();
+
+        Piece *getPieceSelected();
+
+
 };
 
 #endif // JOUEUR_H

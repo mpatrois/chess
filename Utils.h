@@ -13,7 +13,6 @@ struct Partie
     Partie(std::string nam,std::string cps)
     {
         name=nam;
-
         blows=cps;
     };
 };

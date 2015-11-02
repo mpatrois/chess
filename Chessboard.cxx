@@ -5,7 +5,6 @@
  */
 
 #include "Chessboard.h"
-#include "Player.h"
 #include "WhitePlayer.h"
 #include "BlackPlayer.h"
 
@@ -18,25 +17,7 @@ using namespace std;
  */
 Chessboard::Chessboard() : tour(0)
 {
-    for(unsigned int i=0; i<64; i++)
-    {
-        m_cases[i]=NULL;
-    }
-
-    Player *jB=new WhitePlayer();
-    Player *jN=new BlackPlayer();
-
-    setPlayer(jB,jN);
-
-    font.loadFromFile("ressources/dreamwalker.ttf");
-
-    spriteCurrentPlayer=sf::Sprite(Piece::texturePiece);
-
-    texturePlateau.loadFromFile("ressources/board.png");
-
-    spritePlateau=sf::Sprite(texturePlateau);
-
-
+    initBoard();
 }
 
 Chessboard::Chessboard(Player *j1,Player *j2) : tour(0)
@@ -47,57 +28,25 @@ Chessboard::Chessboard(Player *j1,Player *j2) : tour(0)
     }
 
     setPlayer(j1,j2);
-
-    font.loadFromFile("ressources/dreamwalker.ttf");
-
-    spriteCurrentPlayer=sf::Sprite(Piece::texturePiece);
-
 }
 
-Chessboard::Chessboard(Partie p) : tour(0)
+void Chessboard::initBoard()
 {
     for(unsigned int i=0; i<64; i++)
     {
         m_cases[i]=NULL;
     }
 
-    Player *jB = new WhitePlayer();
-    Player *jN = new BlackPlayer();
+    Player *jB=new WhitePlayer();
+    Player *jN=new BlackPlayer();
+
     setPlayer(jB,jN);
 
-    std::vector<std::string> listeBlowsString = Utility::split(p.blows,"|");
-
-    std::vector<Blow> listeBlowsCharge;
-
-    for (unsigned int i=0;i<listeBlowsString.size();i++ )
-    {
-        int cseDepX=listeBlowsString[i][0]-'0';
-        int cseDepY=listeBlowsString[i][1]-'0';
-        int cseArvX=listeBlowsString[i][2]-'0';
-        int cseArvY=listeBlowsString[i][3]-'0';
-
-        Square caseDepart(cseDepX,cseDepY);
-        Square caseArrivee(cseArvX,cseArvY);
-
-        listeBlowsCharge.push_back(Blow(caseDepart,caseArrivee));
-    }
-
-    for (unsigned int i=0;i<listeBlowsCharge.size();i++ )
-    {
-        players[tour]->selectPiece(listeBlowsCharge[i].caseDepart.x,listeBlowsCharge[i].caseDepart.y,this);
-        players[tour]->move(listeBlowsCharge[i].caseArrivee.x,listeBlowsCharge[i].caseArrivee.y,this);
-
-        tour=(tour+1)%2;
-    }
-
-    font.loadFromFile("dreamwalker.ttf");
-
-    spriteCurrentPlayer = sf::Sprite(Piece::texturePiece);
-
-    texturePlateau.loadFromFile("board.png");
-
-    spritePlateau = sf::Sprite(texturePlateau);
+    listeBlows.clear();
+    posUndo=0;
+    tour=0;
 }
+
 Chessboard::~Chessboard()
 {
     delete players[0];
@@ -120,9 +69,6 @@ Piece* Chessboard::getPiece( int x, int y )
     else
         return NULL;
 }
-
-
-
 
 /**
  * Place une piece sur l'chessboard, aux coordonnees specifiees dans la piece.
@@ -195,34 +141,6 @@ void Chessboard::display()
     cout << "  01234567" << endl;
 }
 
-void
-Chessboard::graphicDisplay(sf::RenderWindow &app)
-{
-    sf::Text text;
-
-    text.setFont(font);
-    text.setString("Current player");
-    text.setCharacterSize(24);
-    text.setColor(sf::Color::Black);
-    text.setStyle(sf::Text::Underlined);
-    text.setPosition(500,130);
-
-    app.draw(text);
-
-    if(players[tour]->isWhite())
-        spriteCurrentPlayer.setTextureRect(sf::IntRect(60, 60, 60, 60));
-    else
-        spriteCurrentPlayer.setTextureRect(sf::IntRect(0, 60, 60, 60));
-
-    spriteCurrentPlayer.setPosition(500,160);
-
-    app.draw(spritePlateau);
-    app.draw(spriteCurrentPlayer);
-
-    players[0]->displayPlayerPiece(app,this);
-    players[1]->displayPlayerPiece(app,this);
-}
-
 bool Chessboard::click(int mx,int my)
 {
     int caseX=mx/60;
@@ -252,19 +170,6 @@ void Chessboard::setPlayer(Player *jB,Player *jN)
     jB->put(this);
     jN->put(this);
 }
-//void Chessboard::savePartie(std::string nameFile)
-//{
-//    ofstream myfile;
-//
-//    myfile.open ("savedGames.txt",std::ios_base::app);
-//    myfile << nameFile << endl;
-//    myfile << tour << endl;
-//
-//    players[0]->savePlayer(myfile);
-//    players[1]->savePlayer(myfile);
-//
-//    myfile.close();
-//};
 
 void Chessboard::savePartie(std::string nameFile)
 {
@@ -285,6 +190,39 @@ void Chessboard::savePartie(std::string nameFile)
     myfile.close();
 };
 
+void Chessboard::setBoardWithBlows(std::vector<Blow> listeBlowsCharge)
+{
+    for (unsigned int i=0;i<listeBlowsCharge.size();i++ )
+    {
+        players[tour]->selectPiece(listeBlowsCharge[i].caseDepart.x,listeBlowsCharge[i].caseDepart.y,this);
+        players[tour]->move(listeBlowsCharge[i].caseArrivee.x,listeBlowsCharge[i].caseArrivee.y,this);
+        tour=(tour+1)%2;
+    }
+    posUndo=listeBlows.size();
+}
+
+void Chessboard::loadPartie(Partie partie)
+{
+    std::vector<std::string> listeBlowsString = Utility::split(partie.blows,"|");
+
+    std::vector<Blow> listeBlowsCharge;
+
+    for (unsigned int i=0;i<listeBlowsString.size();i++ )
+    {
+        int cseDepX=listeBlowsString[i][0]-'0';
+        int cseDepY=listeBlowsString[i][1]-'0';
+        int cseArvX=listeBlowsString[i][2]-'0';
+        int cseArvY=listeBlowsString[i][3]-'0';
+
+        Square caseDepart(cseDepX,cseDepY);
+        Square caseArrivee(cseArvX,cseArvY);
+
+        listeBlowsCharge.push_back(Blow(caseDepart,caseArrivee));
+    }
+
+    setBoardWithBlows(listeBlowsCharge);
+}
+
 Player *Chessboard::getAdverse(bool colPlayer){
      if(colPlayer)
         return players[1];
@@ -294,6 +232,8 @@ Player *Chessboard::getAdverse(bool colPlayer){
 
 void Chessboard::addBlow(Square cd,Square ca){
     listeBlows.push_back(Blow(cd,ca));
+    posUndo=listeBlows.size();
+    std::cout << posUndo << std::endl;
 }
 
 
@@ -302,4 +242,39 @@ Blow Chessboard::getLastBlow(){
         return listeBlows.back();
     else
         return Blow();
+}
+
+Player *Chessboard::getPlayerWhite(){
+    return players[0];
+}
+
+Player *Chessboard::getPlayerBlack(){
+    return players[1];
+}
+
+Player *Chessboard::getCurrentPlayer(){
+    return players[tour];
+}
+
+void Chessboard::undo()
+{
+//    std::cout << posUndo << std::endl;
+
+    if(posUndo>0)
+    {
+        posUndo--;
+        std::vector<Blow> listCurrentBlows=listeBlows;
+        std::vector<Blow> listUndoCoup;
+        for(int i=0;i<posUndo;i++)
+        {
+            listUndoCoup.push_back(listeBlows[i]);
+        };
+
+        delete players[0];
+        delete players[1];
+
+        initBoard();
+        setBoardWithBlows(listUndoCoup);
+
+    }
 }

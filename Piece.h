@@ -47,12 +47,11 @@ class Piece
 
         int m_y;
 
-
     protected:
 
         bool m_white;
 
-        sf::Sprite spritePiece;
+        sf::IntRect rectPiece;
 
     public:
 
@@ -78,22 +77,11 @@ class Piece
 
         void display();
 
-        static sf::Texture texturePiece;
-
-        static void initImage()
-        {
-            texturePiece.loadFromFile("ressources/chess.png");
-        };
-
         virtual char typePiece() = 0;
 
-        void graphicDisplay(sf::RenderWindow &app)
-        {
-            spritePiece.setPosition(x()*60,y()*60);
-            app.draw(spritePiece);
-        }
-
         virtual std::vector<Square> availableMovements(Chessboard *e)=0;
+
+        sf::IntRect getRectPiece();
 
 };
 

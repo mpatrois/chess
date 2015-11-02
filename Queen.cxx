@@ -4,9 +4,9 @@
 Queen::Queen(int x, int y, bool white):Piece(x,y,white)
 {
     if(m_white)
-        spritePiece.setTextureRect(sf::IntRect(60, 240, 60, 60));
+        rectPiece=sf::IntRect(60, 240, 60, 60);
     else
-        spritePiece.setTextureRect(sf::IntRect(0, 240, 60, 60));
+        rectPiece=sf::IntRect(0, 240, 60, 60);
 };
 
 Queen::~Queen() {};

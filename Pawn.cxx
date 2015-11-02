@@ -3,9 +3,9 @@
 Pawn::Pawn(int x,int y,bool white):Piece(x,y,white)
 {
     if(m_white)
-        spritePiece.setTextureRect(sf::IntRect(60, 0, 60, 60));
+        rectPiece=sf::IntRect(60, 0, 60, 60);
     else
-        spritePiece.setTextureRect(sf::IntRect(0, 0, 60, 60));
+        rectPiece=sf::IntRect(0, 0, 60, 60);
 
     nbMove=0;
 };

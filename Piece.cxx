@@ -7,7 +7,7 @@
 // A besoin de la declaration de la classe
 #include "Player.h"
 
-sf::Texture Piece::texturePiece=sf::Texture();
+//sf::Texture Piece::texturePiece=sf::Texture();
 
 Piece::Piece()
 {}
@@ -17,7 +17,6 @@ Piece::Piece(int x,int y,bool white)
     m_x=x;
     m_y=y;
     m_white=white;
-    spritePiece= sf::Sprite(texturePiece);
 }
 
 Piece::Piece(const Piece &p)
@@ -25,7 +24,6 @@ Piece::Piece(const Piece &p)
     m_x = p.m_x;
     m_y = p.m_y;
     m_white = p.m_white;
-    spritePiece= sf::Sprite(texturePiece);
 }
 Piece::~Piece()
 {
@@ -86,3 +84,7 @@ void Piece::display()
 
     std::cout << std::endl;
 }
+
+ sf::IntRect Piece::getRectPiece(){
+    return rectPiece;
+ }

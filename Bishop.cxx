@@ -4,9 +4,9 @@
 Bishop::Bishop(int x, int y, bool white) : Piece(x,y,white)
 {
     if(m_white)
-        spritePiece.setTextureRect(sf::IntRect(60, 120, 60, 60));
+        rectPiece=sf::IntRect(60, 120, 60, 60);
     else
-        spritePiece.setTextureRect(sf::IntRect(0, 120, 60, 60));
+        rectPiece=sf::IntRect(0, 120, 60, 60);
 };
 
 Bishop::~Bishop() {}
@@ -19,7 +19,7 @@ Bishop *Bishop::clone()
 std::vector<Square> Bishop::availableMovements(Chessboard *e)
 {
     std::vector<Square> listeCase;
-    
+
     for(int vx=-1; vx<2; vx++)
     {
         for(int vy=-1; vy<2; vy++)

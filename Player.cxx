@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <cmath>
 
 Player::Player()
 {
@@ -12,7 +13,6 @@ Player::Player(const Player &j)
 
     for(unsigned int i=0; i<j.playerPieces.size(); i++)
     {
-
         Piece *p=j.playerPieces[i]->clone();
 
         playerPieces.push_back(p);
@@ -41,50 +41,6 @@ void Player::affichePieceJTerminal()
 {
     for (unsigned int x=0; x<playerPieces.size(); x++)
         playerPieces[x]->display();
-}
-
-void Player::displayPlayerPiece(sf::RenderWindow &app,Chessboard *e)
-{
-    if(check)
-    {
-        sf::CircleShape circle(30);
-
-        circle.setFillColor(sf::Color::Red);
-        circle.setPosition(kingPlayer->x()*60,kingPlayer->y()*60);
-
-        app.draw(circle);
-    }
-
-    if(selectedPiece!=NULL)
-    {
-        sf::RectangleShape rectangle;
-
-        rectangle.setSize(sf::Vector2f(60, 60));
-        rectangle.setFillColor(sf::Color(81,124,102));
-        rectangle.setPosition(selectedPiece->x()*60,selectedPiece->y()*60);
-
-        app.draw(rectangle);
-
-        std::vector<Square> listCase=listeMouvementPossible(e);
-
-        for (unsigned int j=0; j<listCase.size(); j++)
-        {
-            if(!willBeEchec(listCase[j].x,listCase[j].y))
-            {
-                sf::CircleShape circle(15);
-
-                circle.setFillColor(sf::Color(81,124,102));
-                circle.setPosition(listCase[j].x*60+15,listCase[j].y*60+15);
-
-                app.draw(circle);
-            }
-        }
-    }
-
-    for (unsigned int x=0; x<playerPieces.size(); x++)
-    {
-        playerPieces[x]->graphicDisplay(app);
-    }
 }
 
 void Player::loosePiece(Piece *piecePerdue)
@@ -127,7 +83,6 @@ bool Player::willBeEchec(int caseX,int caseY)
     delete myChessboard;
 
     return echecFuture;
-
 }
 
 Square Player::getPosKingPlayer()
@@ -362,7 +317,7 @@ bool Player::canEnPassantRight(Chessboard *e)
 
             Blow c=e->getLastBlow();
 
-            if(pionRight->x()==c.caseArrivee.x && pionRight->y()==c.caseArrivee.y  ){
+            if(pionRight->x()==c.caseArrivee.x && pionRight->y()==c.caseArrivee.y && abs(c.caseDepart.y-c.caseArrivee.y)==2 ){
                 return true;
             }
 
@@ -383,7 +338,7 @@ bool Player::canEnPassantLeft(Chessboard *e)
             if(pionGauche!=nullptr){
 
                 Blow c=e->getLastBlow();
-                if(pionGauche->x()==c.caseArrivee.x && pionGauche->y()==c.caseArrivee.y  ){
+                if(pionGauche->x()==c.caseArrivee.x && pionGauche->y()==c.caseArrivee.y && abs(c.caseDepart.y-c.caseArrivee.y)==2){
                     return true;
                 }
             }
@@ -415,4 +370,16 @@ void Player::selectPiece(int caseX,int caseY,Chessboard *e){
             if(isWhite()==pTmp->isWhite() )
                 selectedPiece=pTmp;
         }
+}
+
+void Player::unselectPiece(){
+    selectedPiece=NULL;
+}
+
+King *Player::getKing(){
+    return kingPlayer;
+};
+
+Piece *Player::getPieceSelected(){
+    return selectedPiece;
 }

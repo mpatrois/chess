@@ -14,7 +14,6 @@
 #include <fstream>
 
 struct Partie;
-struct Partie;
 
 //#include "Utils.h"
 /**
@@ -24,7 +23,7 @@ class Player;
 
 class Chessboard
 {
-private:
+    private:
     /**
      * Les cases de l'chessboard
      */
@@ -34,12 +33,7 @@ private:
 
     int tour;
 
-    sf::Font font;
-
-    sf::Sprite spriteCurrentPlayer;
-    sf::Sprite spritePlateau;
-
-    sf::Texture texturePlateau;
+    int posUndo;
 
     std::vector<Blow> listeBlows;
 
@@ -51,7 +45,7 @@ public:
      */
     Chessboard();
 
-    Chessboard(Partie p);
+//    Chessboard(Partie p);
 
     Chessboard(Player *j1,Player *j2);
 
@@ -96,19 +90,33 @@ public:
      */
     void display();
 
-    void graphicDisplay(sf::RenderWindow &app);
-
     bool click(int mx,int my);
 
     void setPlayer(Player *jB,Player *jN);
 
     void savePartie(std::string nameFile);
 
+    void loadPartie(Partie partie);
+
+    void setBoardWithBlows(std::vector<Blow> listeBlowsCharge);
+
     Player *getAdverse(bool coulPlayer);
 
     void addBlow(Square cd,Square ca);
 
+    void initBoard();
+
     Blow getLastBlow();
+
+    Player *getPlayerWhite();
+
+    Player *getPlayerBlack();
+
+    Player *getCurrentPlayer();
+
+    void undo();
+
+    void redo();
 
 };
 
