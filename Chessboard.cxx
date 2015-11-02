@@ -233,7 +233,7 @@ Player *Chessboard::getAdverse(bool colPlayer){
 void Chessboard::addBlow(Square cd,Square ca){
     listeBlows.push_back(Blow(cd,ca));
     posUndo=listeBlows.size();
-    std::cout << posUndo << std::endl;
+//    std::cout << posUndo << std::endl;
 }
 
 
